@@ -10,7 +10,7 @@
 #include <initializer_list>
 using namespace std;
 
-#include "drift_variant.hh"
+#include "variant.hh"
 
 enum inst : unsigned char
 {
@@ -19,7 +19,7 @@ enum inst : unsigned char
   add,
   sub,
   mul,
-  div,
+  divide,
   end,
   num_literal,
   str_literal
@@ -68,7 +68,7 @@ void page::exec(const std::vector<shared_ptr<variant>>& args)
         break;
       case inst::mul:
         break;
-      case inst::div:
+      case inst::divide:
         break;
       case inst::end:
         break;

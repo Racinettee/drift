@@ -2,15 +2,28 @@
 #include <codecvt>
 #include <fstream>
 #include <string>
-#include <cwtype>
+#include <cwctype>
 using namespace std;
 
 #include "ast.hh"
-#include "drift_variant.hh"
+#include "variant.hh"
 
 namespace
 {
-  static inline atomic_expr* read_num(wchar_t first, std::wistream& input)
+  static std::array<wchar_t*> keywords =
+  {
+    L"let",
+    L"def",
+    L"class"
+  };
+  static inline bool is_keyword(const wstring& kw)
+  {
+    for(auto element : keywords)
+      if(kw == element)
+        return true;
+    return false;
+  }
+  static inline atomic_expr* read_num(wchar_t first, wistream& input)
   {
     std::wstring result = first;
     while(!input.eof() && (iswdigit(input.peek()) || input.peek() == L'.'))
