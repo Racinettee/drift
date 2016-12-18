@@ -3,14 +3,16 @@
 #include <fstream>
 #include <string>
 #include <cwctype>
+#include <iostream>
 using namespace std;
 
 #include "ast.hh"
 #include "variant.hh"
+using namespace drift;
 
 namespace
 {
-  static std::array<wchar_t*> keywords =
+  static std::array<wchar_t*, 3> keywords =
   {
     L"let",
     L"def",
@@ -25,7 +27,8 @@ namespace
   }
   static inline expr* read_ident_or_kw(wchar_t first, wistream& input)
   {
-    std::wstring result = first;
+    std::wstring result = L"";
+    result += first;
     while(!input.eof() && iswalnum(input.peek()))
       result += input.get();
 
@@ -36,7 +39,8 @@ namespace
   }
   static inline atomic_expr* read_num(wchar_t first, wistream& input)
   {
-    std::wstring result = first;
+    std::wstring result = L"";
+    result += first;
     while(!input.eof() && (iswdigit(input.peek()) || input.peek() == L'.'))
       result += input.get();
     // do some validation like check for to many dots in the number

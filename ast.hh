@@ -21,6 +21,7 @@ namespace drift
   };
   struct binary_arith : expr
   {
+    binary_arith(std::wstring, expr*, expr*);
     virtual void emit(context*) = 0;
     std::wstring op;
     expr* left;
@@ -28,9 +29,21 @@ namespace drift
   };
   struct block_expr : expr
   {
-    block_expr(std::vector<expr*>);
+    block_expr(std::vector<expr*> ee): expressions(ee) { }
     virtual ~block_expr();
     virtual void emit(context*) = 0;
     std::vector<expr*> expressions;
-  }
+  };
+  struct keyword_expr : expr
+  {
+    keyword_expr(std::wstring kw): keyword(kw) { }
+    virtual void emit(context*) = 0;
+    std::wstring keyword;
+  };
+  struct identifier_expr : expr
+  {
+    identifier_expr(std::wstring ident): identifier(ident) { }
+    virtual void emit(context*) = 0;
+    std::wstring identifier;
+  };
 }

@@ -32,6 +32,7 @@ namespace drift
     }
     ~variant()
     {
+      using namespace std;
       switch(kind)
       {
         case element_kind::str:
@@ -52,6 +53,7 @@ namespace drift
 
   variant operator+(const variant& l, const variant& r)
   {
+    using namespace std;
     switch(l.kind)
     {
       case variant::element_kind::dbl:
