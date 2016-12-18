@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <vector>
 
 #include "context.hh"
 #include "variant.hh"
@@ -25,4 +26,11 @@ namespace drift
     expr* left;
     expr* right;
   };
+  struct block_expr : expr
+  {
+    block_expr(std::vector<expr*>);
+    virtual ~block_expr();
+    virtual void emit(context*) = 0;
+    std::vector<expr*> expressions;
+  }
 }
