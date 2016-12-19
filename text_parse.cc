@@ -13,6 +13,14 @@ using namespace drift;
 
 namespace
 {
+  void eat_whitespace(wistream& input)
+  {
+    wchar_t chr = input.peek();
+    while(chr == L' ' || chr == L'\n' || chr == L'\t') {
+      input.get();
+      chr = input.peek();
+    }
+  }
   static const array<wchar_t*, 3> keywords =
   {
     L"let",
@@ -25,6 +33,28 @@ namespace
       if(kw == element)
         return true;
     return false;
+  }
+  static const array<wchar_t, 5> arithmetic =
+  {
+    L'+',
+    L'-',
+    L'*',
+    L'/',
+    L'%',
+    L'^',
+    L'='
+  };
+  static inline is_arith(const wchar_t syntax)
+  {
+    for(wchar_t e : arithmetic)
+      if(e == syntax)
+        return true;
+    return false;
+  }
+  static inline binary_arith* read_binop(wchar_t first_char, expr* left_op)
+  {
+    wstring oper = L"";
+    oper += first_char;
   }
   static inline expr* read_ident_or_kw(wchar_t first, wistream& input)
   {
@@ -46,29 +76,18 @@ namespace
       result += input.get();
     // do some validation like check for to many dots in the number
     // ...
+    eat_whitespace(input);
 
-    return new atomic_expr(stod(result));
-  }
-  static const array<wchar_t, 5> arithmetic =
-  {
-    L'+',
-    L'-',
-    L'*',
-    L'/',
-    L'%',
-    L'^',
-    L'='
-  };
-  static inline is_arith(const wchar_t syntax)
-  {
-    for(wchar_t e : arithmetic)
-      if(e == syntax)
-        return true;
-    return false;
+    atomic_expr* numeric_expr = new atomic_expr(stod(result));
+
+    if(is_arith(input.peek()))
+      return read_binop(input.get(), numeric_expr);
+
+    return numeric_expr;
   }
   static unary_operator* unary_op(const wchar_t op)
   {
-    
+
   }
 }
 namespace drift
