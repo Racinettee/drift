@@ -81,6 +81,8 @@ void page::exec(const std::vector<shared_ptr<variant>>& args)
   }
 }
 
+#include "context.hh"
+
 int main() try
 {
   using namespace std;
@@ -95,6 +97,10 @@ int main() try
   code_page.exec({});
 
   cout << (*stack.back()).num << endl;
+
+  context ctxt;
+
+  shared_ptr<variant> result = ctxt(L"16 + 16");
 }
 catch(std::exception& e)
 {

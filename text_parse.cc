@@ -2,6 +2,7 @@
 #include <codecvt>
 #include <fstream>
 #include <string>
+#include <sstream>
 #include <cwctype>
 #include <iostream>
 using namespace std;
@@ -12,7 +13,7 @@ using namespace drift;
 
 namespace
 {
-  static std::array<wchar_t*, 3> keywords =
+  static const array<wchar_t*, 3> keywords =
   {
     L"let",
     L"def",
@@ -48,6 +49,27 @@ namespace
 
     return new atomic_expr(stod(result));
   }
+  static const array<wchar_t, 5> arithmetic =
+  {
+    L'+',
+    L'-',
+    L'*',
+    L'/',
+    L'%',
+    L'^',
+    L'='
+  };
+  static inline is_arith(const wchar_t syntax)
+  {
+    for(wchar_t e : arithmetic)
+      if(e == syntax)
+        return true;
+    return false;
+  }
+  static unary_operator* unary_op(const wchar_t op)
+  {
+    
+  }
 }
 namespace drift
 {
@@ -62,6 +84,11 @@ namespace drift
       if(iswdigit(first_char))
       {
         results.push_back(read_num(first_char, input));
+      }
+      else if(is_arith(first_char))
+      {
+        // From this level it is likely a unary opeator
+        results.push_back(unary_op(first_char, input));
       }
       else if(iswalnum(first_char))
       {

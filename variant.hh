@@ -51,7 +51,7 @@ namespace drift
 	}
   typedef std::shared_ptr<variant> variant_ptr;
 
-  variant operator+(const variant& l, const variant& r)
+  inline variant operator+(const variant& l, const variant& r)
   {
     using namespace std;
     switch(l.kind)
