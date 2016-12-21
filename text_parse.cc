@@ -85,7 +85,7 @@ namespace
 
     return numeric_expr;
   }
-  static unary_operator* unary_op(const wchar_t op)
+  static inline unary_operator* unary_op(const wchar_t op)
   {
 
   }
