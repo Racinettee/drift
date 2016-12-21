@@ -13,7 +13,7 @@ using namespace drift;
 
 namespace
 {
-  void eat_whitespace(wistream& input)
+  static inline void eat_whitespace(wistream& input)
   {
     wchar_t chr = input.peek();
     while(chr == L' ' || chr == L'\n' || chr == L'\t') {
@@ -44,7 +44,7 @@ namespace
     L'^',
     L'='
   };
-  static inline is_arith(const wchar_t syntax)
+  static inline bool is_arith(const wchar_t syntax)
   {
     for(wchar_t e : arithmetic)
       if(e == syntax)
