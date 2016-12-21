@@ -34,7 +34,7 @@ namespace
         return true;
     return false;
   }
-  static const array<wchar_t, 5> arithmetic =
+  static const array<wchar_t, 7> arithmetic =
   {
     L'+',
     L'-',
