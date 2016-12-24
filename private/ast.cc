@@ -9,6 +9,14 @@ namespace drift
   {
 
   }
+  void unary_operator::emit(context* cc)
+  {
+
+  }
+  unary_operator::~unary_operator()
+  {
+    delete symbol;
+  }
   binary_arith::binary_arith(wstring op, expr* l, expr* r)
   {
 

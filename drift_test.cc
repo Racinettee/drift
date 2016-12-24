@@ -11,31 +11,16 @@
 using namespace std;
 
 #include "variant.hh"
-
-enum inst : unsigned char
-{
-  push,
-  pop,
-  add,
-  sub,
-  mul,
-  divide,
-  end,
-  num_literal,
-  str_literal
-};
+#include "private/types.hh"
 
 using namespace drift;
-
-typedef std::vector<inst> inst_list;
-typedef std::deque<std::shared_ptr<variant>> value_stack;
 
 value_stack stack; 
 struct page // code page
 {
-  inst_list code;
+  program_list code;
 
-  page(const inst_list& l): code(l) { }
+  page(const program_list& l): code(l) { }
   void exec(const std::vector<shared_ptr<variant>>& args);
   size_t size_bytes() const
   {
