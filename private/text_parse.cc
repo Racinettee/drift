@@ -60,6 +60,8 @@ namespace
 
     eat_whitespace(input);
 
+    binary_arith* bin_node = new 
+
     return new binary_arith(oper, left_op, )
   }
   static inline expr* read_ident_or_kw(wchar_t first, wistream& input)
@@ -135,7 +137,8 @@ namespace drift
       assert(input.get() == L'}');
       return block;
     }
-    throw std::runtime_error("Unknown expression");
+    else
+      throw std::runtime_error("Unknown expression");
   }
   block_expr* parse(std::wistream& input)
   {
