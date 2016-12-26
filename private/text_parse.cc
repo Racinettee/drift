@@ -128,6 +128,13 @@ namespace drift
       assert(input.get() == L')');
       return exp;
     }
+    else if(input.peek() == L'{')
+    {
+      input.get();
+      block_expr* block = parse(input);
+      assert(input.get() == L'}');
+      return block;
+    }
     throw std::runtime_error("Unknown expression");
   }
   block_expr* parse(std::wistream& input)
@@ -136,21 +143,11 @@ namespace drift
 
     while(!input.eof())
     {
-      wchar_t first_char = input.get();
-
-      if(iswdigit(first_char))
-      {
-        results.push_back(read_num(first_char, input));
-      }
-      else if(is_arith(first_char))
-      {
-        // From this level it is likely a unary operator
-        results.push_back(unary_op(first_char, input));
-      }
-      else if(iswalnum(first_char))
-      {
-        results.push_back(read_ident_or_kw(first_char, input));
-      }
+      auto peek_char = input.peek();
+      if(peek_char == L')' || peek_char == L'}')
+        break;
+      
+      results.push_back(parse_expr(input));
     }
     return new block_expr(results);
   }
