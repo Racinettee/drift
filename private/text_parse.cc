@@ -8,7 +8,7 @@
 using namespace std;
 
 #include "ast.hh"
-#include "variant.hh"
+#include "../variant.hh"
 using namespace drift;
 
 namespace
@@ -51,10 +51,16 @@ namespace
         return true;
     return false;
   }
-  static inline binary_arith* read_binop(wchar_t first_char, expr* left_op)
+  static inline binary_arith* read_binop(wchar_t first_char, expr* left_op, wistream& input)
   {
     wstring oper = L"";
     oper += first_char;
+    while(is_arith(input.peek()))
+      oper += input.get();
+
+    eat_whitespace(input);
+
+    return new binary_arith(oper, left_op, )
   }
   static inline expr* read_ident_or_kw(wchar_t first, wistream& input)
   {
@@ -68,7 +74,11 @@ namespace
       return new keyword_expr(result);
     return new identifier_expr(result);
   }
-  static inline atomic_expr* read_num(wchar_t first, wistream& input)
+  // Read a number and return an expression
+  // Will read the next bit of input:
+  // If it is +,-,*,/ then it will descend into binop expr
+  // If it is dot it will descend into member function call (when it exists)
+  static inline expr* read_num(wchar_t first, wistream& input)
   {
     std::wstring result = L"";
     result += first;
@@ -85,13 +95,41 @@ namespace
 
     return numeric_expr;
   }
-  static inline unary_operator* unary_op(const wchar_t op)
+  static inline unary_operator* unary_op(const wchar_t op, wistream& input)
   {
 
   }
 }
 namespace drift
 {
+  expr* parse_expr(std::wistream& input)
+  {
+    wchar_t first_char = input.get();
+
+    // Parse a numeric literal expr
+    if(iswdigit(first_char))
+    {
+      return read_num(first_char, input);
+    }
+    // Parse unary operator expr
+    else if(is_arith(first_char))
+    {
+      return unary_op(first_char, input);
+    }
+    // Identifier expression
+    else if(iswalnum(first_char))
+    {
+      return read_ident_or_kw(first_char, input);
+    }
+    else if(input.peek() == L'(')
+    {
+      input.get();
+      expr* exp = parse_expr(input);
+      assert(input.get() == L')');
+      return exp;
+    }
+    throw std::runtime_error("Unknown expression");
+  }
   block_expr* parse(std::wistream& input)
   {
     std::vector<expr*> results;
@@ -106,7 +144,7 @@ namespace drift
       }
       else if(is_arith(first_char))
       {
-        // From this level it is likely a unary opeator
+        // From this level it is likely a unary operator
         results.push_back(unary_op(first_char, input));
       }
       else if(iswalnum(first_char))

@@ -1,4 +1,7 @@
 #pragma once
+#include <deque>
+#include <vector>
+#include <memory>
 #include "../variant.hh"
 namespace drift
 {

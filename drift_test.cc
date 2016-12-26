@@ -77,7 +77,7 @@ int main() try
     inst::num_literal, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 48, 64,
     inst::add};
 
-  page code_page{std::vector<inst>((inst*)instructions, (inst*)instructions + sizeof instructions)};
+  page code_page{std::vector<op_t>((inst*)instructions, (inst*)instructions + sizeof instructions)};
 
   code_page.exec({});
 

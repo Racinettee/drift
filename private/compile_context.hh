@@ -5,7 +5,10 @@
 
 #include "types.hh"
 
-struct compile_context
+namespace drift
 {
-  program_list program;
-};
+  struct compile_context
+  {
+    program_list program;
+  };
+}

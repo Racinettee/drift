@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "compile_context.hh"
-#include "variant.hh"
+#include "../variant.hh"
 
 namespace drift
 {
@@ -14,11 +14,12 @@ namespace drift
   };
   struct atomic_expr : expr
   {
-    atomic_expr(double d): atom_kind(kind::num), value(shared_variant(d)) { }
+    typedef variant::element_kind kind;
+    atomic_expr(double d): atom_kind(kind::dbl), value(shared_variant(d)) { }
     atomic_expr(std::wstring s): atom_kind(kind::str), value(shared_variant(s)) { }
     virtual void emit(compile_context*) override;
     std::shared_ptr<variant> value;
-    variant::element_kind atom_kind;
+    kind atom_kind;
   };
   struct unary_operator : expr
   {
@@ -26,13 +27,14 @@ namespace drift
       symbol(sym), expression(e) { }
     virtual ~unary_operator();
     // We will upcast to try and validate that symbol is a valid child node
-    virtual void emit(compile_contex*) override;
+    virtual void emit(compile_context*) override;
     std::wstring symbol;
     expr* expression;
   };
   struct binary_arith : expr
   {
     binary_arith(std::wstring, expr*, expr*);
+    virtual ~binary_arith();
     virtual void emit(compile_context*) final;
     std::wstring op;
     expr* left;
