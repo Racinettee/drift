@@ -7,10 +7,17 @@
 #include <iostream>
 using namespace std;
 
+#include <assert.h>
+
 #include "ast.hh"
 #include "../variant.hh"
 using namespace drift;
 
+namespace drift
+{
+  block_expr* parse(std::wistream& input);
+  expr* parse_expr(std::wistream& input);
+}
 namespace
 {
   static inline void eat_whitespace(wistream& input)
@@ -30,7 +37,7 @@ namespace
   static inline bool is_keyword(const wstring& kw)
   {
     for(auto element : keywords)
-      if(kw == element)
+      if(kw == wstring(element))
         return true;
     return false;
   }
@@ -60,9 +67,16 @@ namespace
 
     eat_whitespace(input);
 
-    binary_arith* bin_node = new 
+    expr* right_op = parse_expr(input);
 
-    return new binary_arith(oper, left_op, )
+    eat_whitespace(input);
+
+    binary_arith* oper_node = new binary_arith(oper, left_op, right_op);
+
+    if(is_arith(input.peek()))
+      return read_binop(input.get(), oper_node, input);
+
+    return oper_node;
   }
   static inline expr* read_ident_or_kw(wchar_t first, wistream& input)
   {
@@ -86,20 +100,12 @@ namespace
     result += first;
     while(!input.eof() && (iswdigit(input.peek()) || input.peek() == L'.'))
       result += input.get();
-    // do some validation like check for to many dots in the number
-    // ...
-    eat_whitespace(input);
 
-    atomic_expr* numeric_expr = new atomic_expr(stod(result));
-
-    if(is_arith(input.peek()))
-      return read_binop(input.get(), numeric_expr);
-
-    return numeric_expr;
+    return new atomic_expr(stod(result));
   }
   static inline unary_operator* unary_op(const wchar_t op, wistream& input)
   {
-
+    return new unary_operator(std::wstring(L"")+op, parse_expr(input));
   }
 }
 namespace drift
@@ -108,37 +114,44 @@ namespace drift
   {
     wchar_t first_char = input.get();
 
+    expr* result_expr = nullptr;
+
     // Parse a numeric literal expr
     if(iswdigit(first_char))
     {
-      return read_num(first_char, input);
+      result_expr = read_num(first_char, input);
     }
     // Parse unary operator expr
     else if(is_arith(first_char))
     {
-      return unary_op(first_char, input);
+      result_expr = unary_op(first_char, input);
     }
     // Identifier expression
     else if(iswalnum(first_char))
     {
-      return read_ident_or_kw(first_char, input);
+      result_expr = read_ident_or_kw(first_char, input);
     }
     else if(input.peek() == L'(')
     {
       input.get();
-      expr* exp = parse_expr(input);
+      result_expr = parse_expr(input);
       assert(input.get() == L')');
-      return exp;
     }
     else if(input.peek() == L'{')
     {
       input.get();
-      block_expr* block = parse(input);
+      result_expr = parse(input);
       assert(input.get() == L'}');
-      return block;
     }
     else
       throw std::runtime_error("Unknown expression");
+    
+    eat_whitespace(input);
+
+    if(is_arith(input.peek()))
+      return read_binop(input.get(), result_expr, input);
+
+    return result_expr;
   }
   block_expr* parse(std::wistream& input)
   {
