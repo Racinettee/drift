@@ -4,7 +4,6 @@ using namespace std;
 
 #include "context.hh"
 #include "variant.hh"
-#include "private/types.hh"
 
 using namespace drift;
 
