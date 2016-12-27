@@ -24,5 +24,7 @@ namespace drift
 
   typedef std::deque<std::shared_ptr<variant>> value_stack;
 
+  typedef const std::vector<std::shared_ptr<variant>>& args_t;
+
   //typedef std::unordered_map<std::wstring
 }
