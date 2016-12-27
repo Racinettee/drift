@@ -69,6 +69,7 @@ namespace drift
       wistringstream ss(s);
       block_expr* program = parse(ss);
       program->emit(cc);
+      delete program;
       exec({});
       auto result = stack.back();
       stack.pop_back();
