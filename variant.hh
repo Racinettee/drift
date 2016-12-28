@@ -75,6 +75,23 @@ namespace drift
         }
         break;
     }
-
+  }
+  inline variant operator-(const variant& l, const variant& r)
+  {
+    using namespace std;
+    switch(l.kind)
+    {
+      case variant::element_kind::dbl:
+        switch(r.kind)
+        {
+          case variant::element_kind::dbl:
+            return variant(l.num-r.num);
+          case variant::element_kind::str:
+            return variant(l.num-stod(r.str));
+        }
+        break;
+      case variant::element_kind::str:
+        throw std::runtime_error("Unsupported operation: - attempted with lhand string object");
+    }
   }
 }

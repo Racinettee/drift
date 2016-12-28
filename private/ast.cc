@@ -40,8 +40,8 @@ namespace drift
   }
   void binary_arith::emit(compile_context* cc)
   {
-    right->emit(cc);
     left->emit(cc);
+    right->emit(cc);
     if(op == L"+")
       cc->program.push_back(inst::add);
     else if(op == L"-")

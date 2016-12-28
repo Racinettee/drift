@@ -112,6 +112,7 @@ namespace drift
 {
   expr* parse_expr(std::wistream& input)
   {
+    eat_whitespace(input);
     wchar_t first_char = input.get();
 
     expr* result_expr = nullptr;
@@ -131,15 +132,13 @@ namespace drift
     {
       result_expr = read_ident_or_kw(first_char, input);
     }
-    else if(input.peek() == L'(')
+    else if(first_char == L'(')
     {
-      input.get();
       result_expr = parse_expr(input);
       assert(input.get() == L')');
     }
-    else if(input.peek() == L'{')
+    else if(first_char == L'{')
     {
-      input.get();
       result_expr = parse(input);
       assert(input.get() == L'}');
     }
