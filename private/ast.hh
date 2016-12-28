@@ -23,8 +23,7 @@ namespace drift
   };
   struct unary_operator : expr
   {
-    unary_operator(std::wstring sym, expr* e):
-      symbol(sym), expression(e) { }
+    unary_operator(std::wstring sym, expr* e);
     virtual ~unary_operator();
     // We will upcast to try and validate that symbol is a valid child node
     virtual void emit(compile_context*) override;

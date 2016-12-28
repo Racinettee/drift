@@ -54,8 +54,12 @@ namespace drift
         }
         case inst::mul:
           break;
-        case inst::divide:
+        case inst::divide: {
+          variant_ptr right = stack.back(); stack.pop_back();
+          variant_ptr left = stack.back(); stack.pop_back();
+          stack.push_back(shared_variant(*left / *right));
           break;
+        }
         case inst::end:
           break;
         case inst::num_literal: {

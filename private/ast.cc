@@ -20,13 +20,20 @@ namespace drift
         break;
     }
   }
-  void unary_operator::emit(compile_context* cc)
+  unary_operator::unary_operator(wstring sym, expr* e)
+    : symbol(sym), expression(e)
   {
 
   }
   unary_operator::~unary_operator()
   {
     delete expression;
+  }
+  void unary_operator::emit(compile_context* cc)
+  {
+    expression->emit(cc);
+    if(symbol == L"-")
+      cc->push_inst(inst::neg);
   }
   binary_arith::binary_arith(wstring op, expr* l, expr* r)
     : op(op), left(l), right(r)
@@ -43,9 +50,13 @@ namespace drift
     left->emit(cc);
     right->emit(cc);
     if(op == L"+")
-      cc->program.push_back(inst::add);
+      cc->push_inst(inst::add);
     else if(op == L"-")
-      cc->program.push_back(inst::sub);
+      cc->push_inst(inst::sub);
+    else if(op == L"*")
+      cc->push_inst(inst::mul);
+    else if(op == L"/")
+      cc->push_inst(inst::divide);
     // else if etc....
   }
   block_expr::~block_expr()

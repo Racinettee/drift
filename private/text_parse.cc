@@ -103,9 +103,22 @@ namespace
 
     return new atomic_expr(stod(result));
   }
-  static inline unary_operator* unary_op(const wchar_t op, wistream& input)
+  static inline expr* unary_op(const wchar_t op, wistream& input)
   {
-    return new unary_operator(std::wstring(L"")+op, parse_expr(input));
+    wstring oper = L"";
+    oper += op;
+    while(is_arith(input.peek()))
+      oper += input.get();
+
+    // If our unary operator is followed by a number, lets just create an atomic_expr from it
+    if(iswdigit(input.peek()))
+    {
+      while(!input.eof() && (iswdigit(input.peek()) || input.peek() == L'.'))
+        oper += input.get();
+      return new atomic_expr(stod(oper));
+    }
+    // Otherwise we'll create a unary node - eg for '-' we'll use a neg command
+    return new unary_operator(oper, parse_expr(input));
   }
 }
 namespace drift

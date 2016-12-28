@@ -15,7 +15,8 @@ namespace drift
     divide,
     end,
     num_literal,
-    str_literal
+    str_literal,
+    neg
   };
 
   typedef unsigned char op_t;
