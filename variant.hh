@@ -91,7 +91,18 @@ namespace drift
         }
         break;
       case variant::element_kind::str:
-        throw std::runtime_error("Unsupported operation: - attempted with lhand string object");
+        throw runtime_error("Unsupported operation: - attempted with lhand string object");
+    }
+  }
+  inline variant operator-(const variant& r)
+  {
+    using namespace std;
+    switch(r.kind)
+    {
+      case variant::element_kind::dbl:
+        return variant(-r.num);
+      case variant::element_kind::str:
+        throw runtime_error("Unsupported operation: unary - on rhand of string");
     }
   }
   inline variant operator/(const variant& l, const variant& r)

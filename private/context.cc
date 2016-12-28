@@ -60,6 +60,10 @@ namespace drift
           stack.push_back(shared_variant(*left / *right));
           break;
         }
+        case inst::neg: {
+          variant_ptr operand = stack.back(); stack.pop_back();
+          stack.push_back(shared_variant(-(*operand)));
+        }
         case inst::end:
           break;
         case inst::num_literal: {
