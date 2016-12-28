@@ -16,7 +16,7 @@ using namespace drift;
 namespace drift
 {
   block_expr* parse(std::wistream& input);
-  expr* parse_expr(std::wistream& input);
+  expr* parse_expr(std::wistream& input, bool=true);
 }
 namespace
 {
@@ -67,7 +67,7 @@ namespace
 
     eat_whitespace(input);
 
-    expr* right_op = parse_expr(input);
+    expr* right_op = parse_expr(input, false);
 
     eat_whitespace(input);
 
@@ -123,7 +123,7 @@ namespace
 }
 namespace drift
 {
-  expr* parse_expr(std::wistream& input)
+  expr* parse_expr(std::wistream& input, bool advance_binop)
   {
     eat_whitespace(input);
     wchar_t first_char = input.get();
@@ -160,8 +160,9 @@ namespace drift
     
     eat_whitespace(input);
 
-    if(is_arith(input.peek()))
-      return read_binop(input.get(), result_expr, input);
+    if(advance_binop)
+      if(is_arith(input.peek()))
+        return read_binop(input.get(), result_expr, input);
 
     return result_expr;
   }
