@@ -78,6 +78,11 @@ namespace
 
     return oper_node;
   }
+  static inline expr* handle_keyword(wstring result, wistream& input)
+  {
+    if(result == L"let")
+      
+  }
   static inline expr* read_ident_or_kw(wchar_t first, wistream& input)
   {
     std::wstring result = L"";
@@ -87,7 +92,8 @@ namespace
 
     // Check if keyword, return new keywd expression else new ident expr
     if(is_keyword(result))
-      return new keyword_expr(result);
+      return handle_keyword(result, input);
+
     return new identifier_expr(result);
   }
   // Read a number and return an expression

@@ -69,10 +69,6 @@ namespace drift
     for(auto expr : expressions)
       expr->emit(cc);
   }
-  void keyword_expr::emit(compile_context* cc)
-  {
-
-  }
   void identifier_expr::emit(compile_context* cc)
   {
 

@@ -46,11 +46,17 @@ namespace drift
     virtual void emit(compile_context*) override;
     std::vector<expr*> expressions;
   };
-  struct keyword_expr : expr
+  struct assign_expr : expr
   {
-    keyword_expr(std::wstring kw): keyword(kw) { }
-    virtual void emit(compile_context*) final;
-    std::wstring keyword;
+
+  };
+  struct let_expr : expr
+  {
+    let_expr(std::wstring ident, assign_expr* init = nullptr): ident(ident), initial(init) { }
+    virtual ~let_expr();
+    virtual void emit(compile_context*) override;
+    std::wstring ident;
+    assign_expr* initial;
   };
   struct identifier_expr : expr
   {
