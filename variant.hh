@@ -47,7 +47,7 @@ namespace drift
       }
     }
   };
-  inline null_t null_variant() { return null_t(); }
+  inline variant::null_t null_variant() { return variant::null_t(); }
   template <typename... Args>
 	auto shared_variant(Args&&... args) ->
 	decltype(std::make_shared<variant>(std::forward<Args>(args)...))

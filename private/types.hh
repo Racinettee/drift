@@ -2,6 +2,7 @@
 #include <deque>
 #include <vector>
 #include <memory>
+#include <unordered_map>
 #include "../variant.hh"
 namespace drift
 {

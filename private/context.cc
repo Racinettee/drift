@@ -40,6 +40,10 @@ namespace drift
         case inst::pop:
           stack.pop_back();
           break;
+        case inst::store: {
+          
+          break;
+        }
         case inst::add: {
           variant_ptr right = stack.back(); stack.pop_back();
           variant_ptr left = stack.back(); stack.pop_back();
@@ -64,9 +68,13 @@ namespace drift
           stack.push_back(shared_variant(*left / *right));
           break;
         }
+        case inst::nil:
+          stack.push_back(shared_variant(null_variant()));
+          break;
         case inst::neg: {
           variant_ptr operand = stack.back(); stack.pop_back();
           stack.push_back(shared_variant(-(*operand)));
+          break;
         }
         case inst::end:
           break;

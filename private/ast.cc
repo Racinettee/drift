@@ -79,7 +79,7 @@ namespace drift
     if(initial)
       initial->emit(cc);
     else
-      cc->push_inst(nil);
+      cc->push_inst(inst::nil);
 
     cc->push_inst(inst::store);
     for(op_t* idx_ptr = (op_t*)&index; idx_ptr < (op_t*)&index+sizeof(unsigned int); idx_ptr++)
