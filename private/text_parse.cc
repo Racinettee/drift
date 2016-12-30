@@ -78,17 +78,36 @@ namespace
 
     return oper_node;
   }
-  static inline expr* handle_keyword(wstring result, wistream& input)
-  {
-    if(result == L"let")
-      
-  }
-  static inline expr* read_ident_or_kw(wchar_t first, wistream& input)
+  static inline wstring get_ident(wchar_t first, wistream& input)
   {
     std::wstring result = L"";
     result += first;
     while(!input.eof() && iswalnum(input.peek()))
       result += input.get();
+    return result;
+  }
+  static inline let_expr* handle_letexpr(wistream& input)
+  {
+    eat_whitespace(input);
+    wchar_t first = input.get();
+    assert(iswalpha(first));
+    wstring ident = get_ident(first, input);
+    eat_whitespace(input);
+    assign_expr* initialval_expr = nullptr;
+    if(input.peek() == L'=')
+      initialval_expr = parse_expr(input);
+    return let_expr(ident, initialval_expr);
+  }
+  static inline expr* handle_keyword(wstring result, wistream& input)
+  {
+    if(result == L"let")
+    {
+      return handle_letexpr(input);
+    }
+  }
+  static inline expr* read_ident_or_kw(wchar_t first, wistream& input)
+  {
+    wstring result = get_ident(first, input);
 
     // Check if keyword, return new keywd expression else new ident expr
     if(is_keyword(result))
