@@ -1,3 +1,4 @@
+#include <stack>
 #include <string>
 #include <sstream>
 #include <iostream>
@@ -29,6 +30,8 @@ namespace drift
   }
   void context::exec(const std::vector<shared_ptr<variant>>& args)
   {
+    // Do not delete the last frame - it is owned by the context
+    stack<frame*> stack_frames;
     // This will need to start off at an offset if there is a data segment ever<
     auto& ilist = this->cc->program;
     // The same goes for this line
@@ -44,7 +47,9 @@ namespace drift
           stack.pop_back();
           break;
         case inst::store: {
-          unsigned int index =  //*reinterpret_cast<unsigned int*>(&ilist[i+1]);
+          variant_ptr data = stack.back(); stack.pop_back();
+          stack_frames.top()->set_var(get_datum<unsigned int>(&ilist[i+1]), data);//*reinterpret_cast<unsigned int*>(&ilist[i+1]);
+          i += sizeof(unsigned int);
           break;
         }
         case inst::add: {
@@ -82,8 +87,8 @@ namespace drift
         case inst::end:
           break;
         case inst::num_literal: {
-          stack.push_back(shared_variant(*reinterpret_cast<double*>(&ilist[i+1])));
-          i += +sizeof(double);
+          stack.push_back(shared_variant(get_datum<double>(&ilist[i+1]))); //*reinterpret_cast<double*>(&ilist[i+1])));
+          i += sizeof(double);
           break;
         }
       }

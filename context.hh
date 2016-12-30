@@ -1,5 +1,6 @@
 #pragma once
 #include "private/types.hh"
+#include "private/frame.hh"
 
 namespace drift
 {
@@ -13,6 +14,7 @@ namespace drift
     size_t code_size() const;
   private:
     value_stack stack;
+    frame global_frame;
     struct compile_context* cc;
     void exec(args_t);
   };
