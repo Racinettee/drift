@@ -9,6 +9,7 @@ namespace drift
   {
     push,
     pop,
+    store,
     add,
     sub,
     mul,
@@ -16,6 +17,7 @@ namespace drift
     end,
     num_literal,
     str_literal,
+    nil,
     neg
   };
 
@@ -27,5 +29,5 @@ namespace drift
 
   typedef const std::vector<std::shared_ptr<variant>>& args_t;
 
-  //typedef std::unordered_map<std::wstring
+  typedef std::unordered_map<std::wstring, unsigned int> variable_mapping;
 }

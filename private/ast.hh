@@ -52,11 +52,11 @@ namespace drift
   };
   struct let_expr : expr
   {
-    let_expr(std::wstring ident, assign_expr* init = nullptr): ident(ident), initial(init) { }
+    let_expr(std::wstring ident, expr* init = nullptr): ident(ident), initial(init) { }
     virtual ~let_expr();
     virtual void emit(compile_context*) override;
     std::wstring ident;
-    assign_expr* initial;
+    expr* initial;
   };
   struct identifier_expr : expr
   {

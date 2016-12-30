@@ -6,18 +6,22 @@ namespace drift
 {
   struct variant
   {
+    struct null_t {};
     union
     {
       double num;
       std::wstring str;
+      null_t nul;
     }; 
     enum class element_kind
     {
       dbl,
       str,
+      null
     } kind;
     variant(double d): num(d), kind(element_kind::dbl) { }
     variant(std::wstring s): kind(element_kind::str) { new(&str) std::wstring(s); }
+    variant(null_t n): nul(n), kind(element_kind::null) { }
     variant(const variant& o): kind(o.kind)
     {
       switch(kind)
@@ -43,6 +47,7 @@ namespace drift
       }
     }
   };
+  inline null_t null_variant() { return null_t(); }
   template <typename... Args>
 	auto shared_variant(Args&&... args) ->
 	decltype(std::make_shared<variant>(std::forward<Args>(args)...))

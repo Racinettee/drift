@@ -93,10 +93,10 @@ namespace
     assert(iswalpha(first));
     wstring ident = get_ident(first, input);
     eat_whitespace(input);
-    assign_expr* initialval_expr = nullptr;
+    expr* initialval_expr = nullptr;
     if(input.peek() == L'=')
       initialval_expr = parse_expr(input);
-    return let_expr(ident, initialval_expr);
+    return new let_expr(ident, initialval_expr);
   }
   static inline expr* handle_keyword(wstring result, wistream& input)
   {
