@@ -23,7 +23,10 @@ namespace drift
   {
     return cc->program.size();
   }
-
+  static inline template<class T> T get_datum(op_t& addr)
+  {
+    return *reinterpret_cast<T*>(addr);
+  }
   void context::exec(const std::vector<shared_ptr<variant>>& args)
   {
     // This will need to start off at an offset if there is a data segment ever<
@@ -34,14 +37,14 @@ namespace drift
       switch(ilist[i])
       {
         default:
-          throw std::runtime_error("Unknown instruction!");
+          throw std::runtime_error("Unknown or unimplemented instruction!");
         case inst::push:
           break;
         case inst::pop:
           stack.pop_back();
           break;
         case inst::store: {
-          
+          unsigned int index =  //*reinterpret_cast<unsigned int*>(&ilist[i+1]);
           break;
         }
         case inst::add: {
