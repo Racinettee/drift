@@ -7,6 +7,7 @@ using namespace std;
 #include "ast.hh"
 #include "../context.hh"
 #include "compile_context.hh"
+#include "frame.hh"
 
 namespace drift
 {
@@ -24,7 +25,7 @@ namespace drift
   {
     return cc->program.size();
   }
-  static inline template<class T> T get_datum(op_t& addr)
+  template<class T> static inline T get_datum(op_t* addr)
   {
     return *reinterpret_cast<T*>(addr);
   }
