@@ -18,6 +18,8 @@ namespace drift
       case kind::str:
         // emit the bytes into a data segment or something
         break;
+      case kind::null:
+        break;
     }
   }
   unary_operator::unary_operator(wstring sym, expr* e)

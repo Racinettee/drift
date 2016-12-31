@@ -9,7 +9,10 @@ namespace drift
   public:
     context();
     ~context();
-    std::shared_ptr<variant> operator()(const std::wstring&);
+    // Evaluate an expression
+    variant_ptr operator()(const std::wstring&);
+    // Index the context for globals
+    variant_ptr operator[](const std::wstring&);
     // There is no data segment yet, but if there was this function would include it
     size_t code_size() const;
   private:

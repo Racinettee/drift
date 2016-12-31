@@ -14,6 +14,7 @@ int main() try
     L"-2.3*2\n"
     L"let init");
   cout << result->num << endl;
+  wcout << kind_string(ctxt[L"ident"]) << endl;
 }
 catch(std::exception& e)
 {

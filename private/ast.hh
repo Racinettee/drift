@@ -15,8 +15,8 @@ namespace drift
   struct atomic_expr : expr
   {
     typedef variant::element_kind kind;
-    atomic_expr(double d): atom_kind(kind::dbl), value(shared_variant(d)) { }
-    atomic_expr(std::wstring s): atom_kind(kind::str), value(shared_variant(s)) { }
+    atomic_expr(double d): value(shared_variant(d)), atom_kind(kind::dbl) { }
+    atomic_expr(std::wstring s): value(shared_variant(s)), atom_kind(kind::str) { }
     virtual void emit(compile_context*) override;
     std::shared_ptr<variant> value;
     kind atom_kind;

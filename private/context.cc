@@ -4,10 +4,10 @@
 #include <iostream>
 using namespace std;
 
-#include "ast.hh"
 #include "../context.hh"
-#include "compile_context.hh"
+#include "ast.hh"
 #include "frame.hh"
+#include "compile_context.hh"
 
 namespace drift
 {
@@ -32,7 +32,8 @@ namespace drift
   void context::exec(const std::vector<shared_ptr<variant>>& args)
   {
     // Do not delete the last frame - it is owned by the context
-    stack<frame*> stack_frames;
+    std::stack<frame*> stack_frames;
+    stack_frames.push(&this->global_frame);
     // This will need to start off at an offset if there is a data segment ever<
     auto& ilist = this->cc->program;
     // The same goes for this line
@@ -96,7 +97,7 @@ namespace drift
     }
   }
   
-  shared_ptr<variant> context::operator()(const std::wstring& s)
+  variant_ptr context::operator()(const wstring& s)
   {
     try {
       wistringstream ss(s);
@@ -110,6 +111,13 @@ namespace drift
     }
     catch(exception& e) {
       wcout << e.what() << endl;
+      return shared_variant(null_variant());
     }
+  }
+  variant_ptr context::operator[](const wstring& name)
+  {
+    if(!cc->has_variable(name))
+      return shared_variant(null_variant());
+    global_frame.get_var(cc->variable_index(name));
   }
 }

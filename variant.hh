@@ -32,6 +32,9 @@ namespace drift
         case element_kind::str:
           new(&str) std::wstring(o.str);
           break;
+        case element_kind::null:
+          nul = null_t();
+          break;
       }
     }
     ~variant()
@@ -42,11 +45,16 @@ namespace drift
         case element_kind::str:
           str.~wstring();
           break;
+        case element_kind::null:
+          nul.~null_t();
+          break;
         default:
           break;
       }
     }
   };
+  typedef std::shared_ptr<variant> variant_ptr;
+  std::wstring kind_string(variant_ptr);
   inline variant::null_t null_variant() { return variant::null_t(); }
   template <typename... Args>
 	auto shared_variant(Args&&... args) ->
@@ -54,7 +62,6 @@ namespace drift
 	{
 		return std::make_shared<variant>(std::forward<Args>(args)...);
 	}
-  typedef std::shared_ptr<variant> variant_ptr;
 
   inline variant operator+(const variant& l, const variant& r)
   {
@@ -68,6 +75,8 @@ namespace drift
             return variant(l.num+r.num);
           case variant::element_kind::str:
             return variant(l.num+stod(r.str));
+          case variant::element_kind::null:
+            throw std::runtime_error("Attempted usage of null value as rhand oprand");
         }
         break;
       case variant::element_kind::str:
@@ -77,8 +86,12 @@ namespace drift
             return variant(l.str+to_wstring(r.num));
           case variant::element_kind::str:
             return variant(l.str+r.str);
+          case variant::element_kind::null:
+            throw std::runtime_error("Attempted usage of null value as rhand oprand");
         }
         break;
+      case variant::element_kind::null:
+        throw std::runtime_error("Attempted usage of null value as lhand oprand");
     }
   }
   inline variant operator-(const variant& l, const variant& r)
@@ -93,10 +106,14 @@ namespace drift
             return variant(l.num-r.num);
           case variant::element_kind::str:
             return variant(l.num-stod(r.str));
+          case variant::element_kind::null:
+            throw std::runtime_error("Attempted usage of null value as rhand oprand");
         }
         break;
       case variant::element_kind::str:
         throw runtime_error("Unsupported operation: - attempted with lhand string object");
+      case variant::element_kind::null:
+        throw std::runtime_error("Attempted usage of null value as lhand oprand");
     }
   }
   inline variant operator-(const variant& r)
@@ -108,6 +125,8 @@ namespace drift
         return variant(-r.num);
       case variant::element_kind::str:
         throw runtime_error("Unsupported operation: unary - on rhand of string");
+      case variant::element_kind::null:
+        throw std::runtime_error("Attempted usage of null value as rhand to unary -");
     }
   }
   inline variant operator/(const variant& l, const variant& r)
@@ -122,10 +141,14 @@ namespace drift
             return variant(l.num/r.num);
           case variant::element_kind::str:
             return variant(l.num/stod(r.str));
+          case variant::element_kind::null:
+            throw std::runtime_error("Attempted usage of null value as rhand oprand");
         }
         break;
       case variant::element_kind::str:
         throw std::runtime_error("Unsupported operation: / attempted with lhand string object");
+      case variant::element_kind::null:
+        throw std::runtime_error("Attempted usage of null value as lhand oprand");
     }
   }
   inline variant operator*(const variant& l, const variant& r)
@@ -140,10 +163,14 @@ namespace drift
             return variant(l.num*r.num);
           case variant::element_kind::str:
             return variant(l.num*stod(r.str));
+          case variant::element_kind::null:
+            throw std::runtime_error("Attempted usage of null value as rhand oprand");
         }
         break;
       case variant::element_kind::str:
         throw std::runtime_error("Unsupported operation at this time: * attempted with lhand string object");
+      case variant::element_kind::null:
+        throw std::runtime_error("Attempted usage of null value as lhand oprand");
     }
   }
 }
