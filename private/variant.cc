@@ -2,7 +2,7 @@
 #include "../variant.hh"
 namespace
 {
-  wchar_t* kind_strings[] =
+  static wchar_t* kind_strings[] =
   {
     L"double",
     L"string",
