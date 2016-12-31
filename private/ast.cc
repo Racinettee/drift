@@ -12,8 +12,7 @@ namespace drift
       case kind::dbl:
         // emit the bytes of value->num into cc's result vector
         cc->push_inst(inst::num_literal);
-        for(op_t* dbl_cursor = (op_t*)&value->num; dbl_cursor < (op_t*)&value->num+sizeof(double); dbl_cursor++)
-          cc->push_inst(*dbl_cursor);
+        cc->push_literal<double>(value->num);
         break;
       case kind::str:
         // emit the bytes into a data segment or something
@@ -84,8 +83,7 @@ namespace drift
       cc->push_inst(inst::nil);
 
     cc->push_inst(inst::store);
-    for(op_t* idx_ptr = (op_t*)&index; idx_ptr < (op_t*)&index+sizeof(unsigned int); idx_ptr++)
-      cc->push_inst(*idx_ptr);
+    cc->push_literal<var_index>(index);
   }
   void identifier_expr::emit(compile_context* cc)
   {

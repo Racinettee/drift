@@ -3,8 +3,6 @@
 using namespace std;
 
 #include "context.hh"
-#include "variant.hh"
-
 using namespace drift;
 
 int main() try
