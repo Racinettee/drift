@@ -50,7 +50,7 @@ namespace drift
           break;
         case inst::store: {
           variant_ptr data = stack.back(); stack.pop_back();
-          stack_frames.top()->set_var(get_datum<unsigned int>(&ilist[i+1]), data);//*reinterpret_cast<unsigned int*>(&ilist[i+1]);
+          stack_frames.top()->set_var(get_datum<unsigned int>(&ilist[i+1]), data);
           i += sizeof(unsigned int);
           break;
         }
@@ -86,10 +86,27 @@ namespace drift
           stack.push_back(shared_variant(-(*operand)));
           break;
         }
+        case inst::less_than: {
+          variant_ptr right = stack.back(); stack.pop_back();
+          variant_ptr left = stack.back(); stack.pop_back();
+          stack.push_back(shared_variant(*left < *right));
+          break;
+        }
+        case inst::greater_than: {
+          variant_ptr right = stack.back(); stack.pop_back();
+          variant_ptr left = stack.back(); stack.pop_back();
+          stack.push_back(shared_variant(*left > *right));
+          break;
+        }
+        case inst::jump_false: {
+          variant_ptr bool_value = stack.back(); stack.pop_back();
+          i += (!bool_value->boolean ? get_datum<unsigned int>(&ilist[i+1]) : sizeof(unsigned int));
+          break;
+        }
         case inst::end:
           break;
         case inst::num_literal: {
-          stack.push_back(shared_variant(get_datum<double>(&ilist[i+1]))); //*reinterpret_cast<double*>(&ilist[i+1])));
+          stack.push_back(shared_variant(get_datum<double>(&ilist[i+1])));
           i += sizeof(double);
           break;
         }

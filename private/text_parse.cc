@@ -42,7 +42,7 @@ namespace
         return true;
     return false;
   }
-  static const array<wchar_t, 12> arithmetic =
+  static const array<const wchar_t, 12> arithmetic =
   {
     L'+',
     L'-',
@@ -128,7 +128,7 @@ namespace
   }
   static inline expr* read_ident_or_kw(wchar_t first, wistream& input)
   {
-    wstring result = get_ident(first, input);
+    const wstring result = get_ident(first, input);
 
     // Check if keyword, return new keywd expression else new ident expr
     if(is_keyword(result))
@@ -142,7 +142,7 @@ namespace
   // If it is dot it will descend into member function call (when it exists)
   static inline expr* read_num(wchar_t first, wistream& input)
   {
-    std::wstring result = L"";
+    wstring result = L"";
     result += first;
     while(!input.eof() && (iswdigit(input.peek()) || input.peek() == L'.'))
       result += input.get();
@@ -214,7 +214,7 @@ namespace drift
   }
   block_expr* parse(std::wistream& input)
   {
-    std::vector<expr*> results;
+    vector<expr*> results;
 
     while(!input.eof())
     {

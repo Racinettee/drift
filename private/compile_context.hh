@@ -1,4 +1,6 @@
 #pragma once
+#include <codecvt>
+#include <locale>
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -42,6 +44,15 @@ namespace drift
     template<class T> inline void write_value_bytes(size_t index, T value)
     {
       *reinterpret_cast<T*>(&program.at(index)) = value;
+    }
+    std::wstring_convert<std::codecvt_utf8<wchar_t>> utf8cnv;
+    std::string to_string(const std::wstring& s)
+    {
+      return utf8cnv.to_bytes(s);
+    }
+    std::wstring to_wstring(const std::string& s)
+    {
+      return utf8cnv.from_bytes(s);
     }
   };
 }

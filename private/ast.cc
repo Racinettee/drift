@@ -1,6 +1,7 @@
 #include "ast.hh"
 
 #include <string>
+#include <locale>
 using namespace std;
 
 namespace drift
@@ -48,6 +49,7 @@ namespace drift
   }
   void binary_arith::emit(compile_context* cc)
   {
+    using namespace std::string_literals;
     left->emit(cc);
     right->emit(cc);
     if(op == L"+")
@@ -58,6 +60,16 @@ namespace drift
       cc->push_inst(inst::mul);
     else if(op == L"/")
       cc->push_inst(inst::divide);
+    else if(op == L"<")
+      cc->push_inst(inst::less_than);
+    else if(op == L">")
+      cc->push_inst(inst::greater_than);
+    else if(op == L"==")
+      cc->push_inst(inst::equals);
+    else if(op == L"!=")
+      cc->push_inst(inst::nequals);
+    else
+      throw runtime_error(cc->to_string(L"Unknown binary operator: "s + op));
     // else if etc....
   }
   block_expr::~block_expr()
@@ -102,8 +114,9 @@ namespace drift
     cc->push_literal<unsigned int>(0);
     // 5. Emit the body
     body->emit(cc);
-    // 6. Write uint now that we know where to go
-    cc->write_value_bytes(dest_index, cc->bytes_count());
+    // 6. Write uint now that we know where to go using an offset
+    cc->write_value_bytes<unsigned int>(dest_index, cc->bytes_count() - dest_index);
+    puts("If statement town");
   }
   void identifier_expr::emit(compile_context* cc)
   {

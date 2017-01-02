@@ -22,8 +22,8 @@ namespace drift
     neg,
     less_than,
     greater_than,
-    eq_comp,
-    neq_comp,
+    equals,
+    nequals,
     jump_true,
     jump_false
   };

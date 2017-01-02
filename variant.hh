@@ -120,4 +120,36 @@ namespace drift
     }
     return error_variant(__LINE__, __FILE__, L"Error handling < for variant");
   }
+  inline variant operator >(const variant& l, const variant& r)
+  {
+    using namespace std;
+    switch(l.kind)
+    {
+      case variant::element_kind::bln:
+        switch(r.kind)
+        {
+          case variant::element_kind::bln:
+            return variant(l.boolean > r.boolean);
+          case variant::element_kind::dbl:
+            return variant((int)l.boolean > r.num);
+          default:
+            throw runtime_error("Attempted a > comparison against incompatible types");
+        }
+        break;
+      case variant::element_kind::dbl:
+        switch(r.kind)
+        {
+          case variant::element_kind::bln:
+            return variant(l.num > (int)r.boolean);
+          case variant::element_kind::dbl:
+            return variant(l.num > r.num);
+          default:
+            throw runtime_error("Attempted a > comparison against incompatible types");
+        }
+        break;
+      default:
+        throw runtime_error("Invalid lhand oprand for >");
+    }
+    return error_variant(__LINE__, __FILE__, L"Error handling > for variant");
+  }
 }
