@@ -82,6 +82,14 @@ namespace drift
     for(auto expr : expressions)
       expr->emit(cc);
   }
+  assign_expr::~assign_expr()
+  {
+    delete value;
+  }
+  void assign_expr::emit(compile_context* cc)
+  {
+    
+  }
   let_expr::~let_expr()
   {
     delete initial;

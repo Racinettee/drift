@@ -48,7 +48,11 @@ namespace drift
   };
   struct assign_expr : expr
   {
-
+    assign_expr(std::wstring ident, expr* value): ident(ident), value(value) { }
+    virtual ~assign_expr();
+    virtual void emit(compile_context*) override;
+    std::wstring ident;
+    expr* value;
   };
   struct let_expr : expr
   {

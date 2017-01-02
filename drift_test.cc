@@ -11,7 +11,7 @@ int main() try
   shared_ptr<variant> result = ctxt(
     L"-2.3*2\n"
     L"let init = -(10* -2)\n"
-    L"if(1 > 2) { 1 }");
+    L"if(1 > 2) { init = 1 }");
   cout << result->num << endl;
   variant_ptr init = ctxt[L"init"];
   wcout << kind_string(init) << L": "<< init->num << endl;
