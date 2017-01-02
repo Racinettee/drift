@@ -85,6 +85,26 @@ namespace drift
     cc->push_inst(inst::store);
     cc->push_literal<var_index>(index);
   }
+  if_expr::~if_expr()
+  {
+    delete conditional;
+    delete body;
+  }
+  void if_expr::emit(compile_context* cc)
+  {
+    // 1. Emit the conditional
+    conditional->emit(cc);
+    // 2. Jump if the condition is false to the index indicated by the following four bytes as uint
+    cc->push_inst(inst::jump_false);
+    // 3. Store the index of the aformentioned uint
+    size_t dest_index = cc->bytes_count();
+    // 4. Create storage for the uint
+    cc->push_literal<unsigned int>(0);
+    // 5. Emit the body
+    body->emit(cc);
+    // 6. Write uint now that we know where to go
+    cc->write_value_bytes(dest_index, cc->bytes_count());
+  }
   void identifier_expr::emit(compile_context* cc)
   {
 

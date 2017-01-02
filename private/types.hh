@@ -19,7 +19,13 @@ namespace drift
     num_literal,
     str_literal,
     nil,
-    neg
+    neg,
+    less_than,
+    greater_than,
+    eq_comp,
+    neq_comp,
+    jump_true,
+    jump_false
   };
 
   typedef unsigned char op_t;

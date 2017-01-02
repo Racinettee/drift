@@ -58,6 +58,14 @@ namespace drift
     std::wstring ident;
     expr* initial;
   };
+  struct if_expr : expr
+  {
+    if_expr(expr* cond, block_expr* body): conditional(cond), body(body) { }
+    virtual ~if_expr();
+    virtual void emit(compile_context*) override;
+    expr* conditional;
+    block_expr* body;
+  };
   struct identifier_expr : expr
   {
     identifier_expr(std::wstring ident): identifier(ident) { }

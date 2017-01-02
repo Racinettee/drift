@@ -35,5 +35,13 @@ namespace drift
       program.resize(program.size()+sizeof(T));
       std::copy((op_t*)&literal, (op_t*)&literal+sizeof(T), &program[start]);
     }
+    size_t bytes_count() const
+    {
+      return program.size();
+    }
+    template<class T> inline void write_value_bytes(size_t index, T value)
+    {
+      *reinterpret_cast<T*>(&program.at(index)) = value;
+    }
   };
 }

@@ -28,11 +28,12 @@ namespace
       chr = input.peek();
     }
   }
-  static const array<wchar_t*, 3> keywords =
+  static const array<const wchar_t*, 4> keywords =
   {
     L"let",
     L"def",
-    L"class"
+    L"class",
+    L"if"
   };
   static inline bool is_keyword(const wstring& kw)
   {
@@ -41,7 +42,7 @@ namespace
         return true;
     return false;
   }
-  static const array<wchar_t, 7> arithmetic =
+  static const array<wchar_t, 12> arithmetic =
   {
     L'+',
     L'-',
@@ -49,7 +50,12 @@ namespace
     L'/',
     L'%',
     L'^',
-    L'='
+    L'=',
+    L'&',
+    L'|',
+    L'>',
+    L'<',
+    L'!'
   };
   static inline bool is_arith(const wchar_t syntax)
   {
@@ -98,11 +104,25 @@ namespace
       initialval_expr = parse_expr(input);
     return new let_expr(ident, initialval_expr);
   }
+  static inline if_expr* handle_ifexpr(wistream& input)
+  {
+    eat_whitespace(input);
+    assert(input.peek() == L'(');
+    expr* conditional = parse_expr(input);
+    eat_whitespace(input);
+    assert(input.peek() == L'{');
+    block_expr* body = parse(input);
+    return new if_expr(conditional, body);
+  }
   static inline expr* handle_keyword(wstring result, wistream& input)
   {
     if(result == L"let")
     {
       return handle_letexpr(input);
+    }
+    else if(result == L"if")
+    {
+      return handle_ifexpr(input);
     }
   }
   static inline expr* read_ident_or_kw(wchar_t first, wistream& input)
