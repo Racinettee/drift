@@ -135,6 +135,6 @@ namespace drift
   {
     if(!cc->has_variable(name))
       return shared_variant(null_variant());
-    return global_frame.get_var(cc->variable_index(name));
+    return global_frame.get_var(cc->get_variable(name));
   }
 }

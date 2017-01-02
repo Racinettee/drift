@@ -44,8 +44,8 @@ namespace drift
   }
   binary_arith::~binary_arith()
   {
-    delete left;
     delete right;
+    delete left;
   }
   void binary_arith::emit(compile_context* cc)
   {
@@ -88,7 +88,11 @@ namespace drift
   }
   void assign_expr::emit(compile_context* cc)
   {
-    
+    if(!cc->has_variable(ident))
+      throw runtime_error("Variable: "s+cc->to_string(ident)+" has not been declared"s);
+    value->emit(cc);
+    cc->push_inst(inst::store);
+    cc->push_literal<var_index>(cc->get_variable(ident));
   }
   let_expr::~let_expr()
   {
@@ -107,8 +111,8 @@ namespace drift
   }
   if_expr::~if_expr()
   {
-    delete conditional;
     delete body;
+    delete conditional;
   }
   void if_expr::emit(compile_context* cc)
   {
