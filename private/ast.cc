@@ -116,7 +116,6 @@ namespace drift
     body->emit(cc);
     // 6. Write uint now that we know where to go using an offset
     cc->write_value_bytes<unsigned int>(dest_index, cc->bytes_count() - dest_index);
-    puts("If statement town");
   }
   void identifier_expr::emit(compile_context* cc)
   {
