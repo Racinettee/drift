@@ -124,6 +124,7 @@ namespace
     {
       return handle_ifexpr(input);
     }
+    throw runtime_error("Cannot parse unknown keyword");
   }
   static inline expr* read_ident_or_kw(wchar_t first, wistream& input)
   {
