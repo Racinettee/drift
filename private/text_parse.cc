@@ -138,10 +138,10 @@ namespace
     // By here we know its an identifier - check for some special cases:
     // = - do an assignment expression
     // . - do a member access - when it exists
-    if(input.peek() == L"=")
+    if(input.peek() == L'=')
     {
       input.get();
-      return assign_expr(result, parse_expr(input));
+      return new assign_expr(result, parse_expr(input));
     }
     // Final case - return an ident expr, pushes the value of the variable
     return new identifier_expr(result);
