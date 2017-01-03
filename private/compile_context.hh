@@ -23,7 +23,7 @@ namespace drift
       program.resize(program.size()+sizeof(T));
       std::copy((op_t*)&literal, (op_t*)&literal+sizeof(T), &program[start]);
     }
-    size_t bytes_count() const
+    inline size_t bytes_count() const
     {
       return program.size();
     }
@@ -32,11 +32,11 @@ namespace drift
       *reinterpret_cast<T*>(&program.at(index)) = value;
     }
     std::wstring_convert<std::codecvt_utf8<wchar_t>> utf8cnv;
-    std::string to_string(const std::wstring& s)
+    inline std::string to_string(const std::wstring& s)
     {
       return utf8cnv.to_bytes(s);
     }
-    std::wstring to_wstring(const std::string& s)
+    inline std::wstring to_wstring(const std::string& s)
     {
       return utf8cnv.from_bytes(s);
     }
