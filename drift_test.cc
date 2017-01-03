@@ -15,6 +15,9 @@ int main() try
   cout << result->num << endl;
   variant_ptr init = ctxt[L"init"];
   wcout << kind_string(init) << L": "<< init->num << endl;
+  ctxt(L"init = 3");
+  init = ctxt[L"init"];
+  wcout << kind_string(init) << L": "<< init->num << endl;
 }
 catch(std::exception& e)
 {
