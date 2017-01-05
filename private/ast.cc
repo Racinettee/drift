@@ -22,11 +22,6 @@ namespace drift
         break;
     }
   }
-  unary_operator::unary_operator(wstring sym, expr* e)
-    : symbol(sym), expression(e)
-  {
-
-  }
   unary_operator::~unary_operator()
   {
     delete expression;
@@ -36,11 +31,6 @@ namespace drift
     expression->emit(cc);
     if(symbol == L"-")
       cc->push_inst(inst::neg);
-  }
-  binary_arith::binary_arith(wstring op, expr* l, expr* r)
-    : op(op), left(l), right(r)
-  {
-
   }
   binary_arith::~binary_arith()
   {

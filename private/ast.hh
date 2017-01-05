@@ -15,15 +15,18 @@ namespace drift
   struct atomic_expr : expr
   {
     typedef variant::element_kind kind;
-    atomic_expr(double d): value(shared_variant(d)), atom_kind(kind::dbl) { }
-    atomic_expr(std::wstring s): value(shared_variant(s)), atom_kind(kind::str) { }
+    atomic_expr(double d):
+      value(shared_variant(d)), atom_kind(kind::dbl) { }
+    atomic_expr(std::wstring s):
+      value(shared_variant(s)), atom_kind(kind::str) { }
     virtual void emit(compile_context*) override;
     std::shared_ptr<variant> value;
     kind atom_kind;
   };
   struct unary_operator : expr
   {
-    unary_operator(std::wstring sym, expr* e);
+    unary_operator(std::wstring sym, expr* e):
+      symbol(sym), expression(e) { }
     virtual ~unary_operator();
     // We will upcast to try and validate that symbol is a valid child node
     virtual void emit(compile_context*) override;
@@ -32,7 +35,8 @@ namespace drift
   };
   struct binary_arith : expr
   {
-    binary_arith(std::wstring, expr*, expr*);
+    binary_arith(std::wstring op, expr* l, expr* r):
+      op(op), left(l), right(r) { }
     virtual ~binary_arith();
     virtual void emit(compile_context*) final;
     std::wstring op;
@@ -41,14 +45,16 @@ namespace drift
   };
   struct block_expr : expr
   {
-    block_expr(std::vector<expr*> ee): expressions(ee) { }
+    block_expr(std::vector<expr*> ee):
+      expressions(ee) { }
     virtual ~block_expr();
     virtual void emit(compile_context*) override;
     std::vector<expr*> expressions;
   };
   struct assign_expr : expr
   {
-    assign_expr(std::wstring ident, expr* value): ident(ident), value(value) { }
+    assign_expr(std::wstring ident, expr* value):
+      ident(ident), value(value) { }
     virtual ~assign_expr();
     virtual void emit(compile_context*) override;
     std::wstring ident;
@@ -56,7 +62,8 @@ namespace drift
   };
   struct let_expr : expr
   {
-    let_expr(std::wstring ident, expr* init = nullptr): ident(ident), initial(init) { }
+    let_expr(std::wstring ident, expr* init=nullptr):
+      ident(ident), initial(init) { }
     virtual ~let_expr();
     virtual void emit(compile_context*) override;
     std::wstring ident;
@@ -64,7 +71,8 @@ namespace drift
   };
   struct if_expr : expr
   {
-    if_expr(expr* cond, block_expr* body): conditional(cond), body(body) { }
+    if_expr(expr* cond, block_expr* body):
+      conditional(cond), body(body) { }
     virtual ~if_expr();
     virtual void emit(compile_context*) override;
     expr* conditional;
@@ -72,7 +80,8 @@ namespace drift
   };
   struct identifier_expr : expr
   {
-    identifier_expr(std::wstring ident): identifier(ident) { }
+    identifier_expr(std::wstring ident):
+      identifier(ident) { }
     virtual void emit(compile_context*) final;
     std::wstring identifier;
   };
