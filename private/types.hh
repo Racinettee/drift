@@ -11,6 +11,7 @@ namespace drift
     push,
     pop,
     store,
+    load,
     add,
     sub,
     mul,

@@ -18,6 +18,9 @@ int main() try
   ctxt(L"init = 3");
   init = ctxt[L"init"];
   wcout << kind_string(init) << L": "<< init->num << endl;
+  ctxt(L"init = init + 2");
+  init = ctxt[L"init"];
+  wcout << kind_string(init) << L": "<< init->num << endl;
 }
 catch(std::exception& e)
 {

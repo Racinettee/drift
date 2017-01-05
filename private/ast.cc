@@ -131,6 +131,11 @@ namespace drift
   }
   void identifier_expr::emit(compile_context* cc)
   {
-
+    // Variable decl
+    if(!cc->has_variable(identifier))
+      throw runtime_error("Variable: "s+cc->to_string(identifier)+" has not been declared"s);
+    // Get the value on to the stack
+    cc->push_inst(inst::load);
+    cc->push_literal<var_index>(cc->get_variable(identifier));
   }
 }

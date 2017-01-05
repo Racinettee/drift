@@ -50,8 +50,13 @@ namespace drift
           break;
         case inst::store: {
           variant_ptr data = stack.back(); stack.pop_back();
-          stack_frames.top()->set_var(get_datum<unsigned int>(&ilist[i+1]), data);
-          i += sizeof(unsigned int);
+          stack_frames.top()->set_var(get_datum<var_index>(&ilist[i+1]), data);
+          i += sizeof(var_index);
+          break;
+        }
+        case inst::load: {
+          stack.push_back(stack_frames.top()->get_var(get_datum<var_index>(&ilist[i+1])));
+          i += sizeof(var_index);
           break;
         }
         case inst::add: {
