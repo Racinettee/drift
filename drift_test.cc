@@ -8,19 +8,10 @@ using namespace drift;
 int main() try
 {
   context ctxt;
-  shared_ptr<variant> result = ctxt(
-    L"-2.3*2\n"
-    L"let init = -(10* -2)\n"
-    L"if(1 < 2) { init = 1 }");
-  cout << result->num << endl;
-  variant_ptr init = ctxt[L"init"];
-  wcout << kind_string(init) << L": "<< init->num << endl;
-  ctxt(L"init = 3");
-  init = ctxt[L"init"];
-  wcout << kind_string(init) << L": "<< init->num << endl;
-  ctxt(L"init = init + 2");
-  init = ctxt[L"init"];
-  wcout << kind_string(init) << L": "<< init->num << endl;
+  ctxt.load_file(L"testing/test.drift");
+  auto initial = ctxt[L"result"];
+  wcout << kind_string(initial) << L": "<< initial->num << endl;
+  return 0;
 }
 catch(std::exception& e)
 {

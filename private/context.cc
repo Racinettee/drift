@@ -1,5 +1,6 @@
 #include <stack>
 #include <string>
+#include <fstream>
 #include <sstream>
 #include <iostream>
 using namespace std;
@@ -127,9 +128,13 @@ namespace drift
       program->emit(cc);
       delete program;
       exec({});
-      auto result = stack.back();
-      stack.pop_back();
-      return result;
+      if(!stack.empty())
+      {
+        auto result = stack.back();
+        stack.pop_back();
+        return result;
+      }
+      return shared_variant(null_variant());
     }
     catch(exception& e) {
       wcout << e.what() << endl;
@@ -141,5 +146,29 @@ namespace drift
     if(!cc->has_variable(name))
       return shared_variant(null_variant());
     return global_frame.get_var(cc->get_variable(name));
+  }
+
+  variant_ptr context::load_file(const wstring& file)
+  {
+    try {
+      wifstream fs{cc->to_string(file)};
+      if(!fs.is_open())
+        throw runtime_error("Could not open file: "s+cc->to_string(file));
+      block_expr* program = parse(fs);
+      program->emit(cc);
+      delete program;
+      exec({});
+      if(!stack.empty())
+      {
+        auto result = stack.back();
+        stack.pop_back();
+        return result;
+      }
+      return shared_variant(null_variant());
+    }
+    catch(exception& e) {
+      wcout << e.what() << endl;
+      return shared_variant(null_variant());
+    }
   }
 }

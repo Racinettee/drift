@@ -15,6 +15,8 @@ namespace drift
     variant_ptr operator[](const std::wstring&);
     // There is no data segment yet, but if there was this function would include it
     size_t code_size() const;
+    // Load script from file
+    variant_ptr load_file(const std::wstring&);
   private:
     value_stack stack;
     frame global_frame;
