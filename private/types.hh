@@ -3,6 +3,11 @@
 #include <vector>
 #include <memory>
 #include <unordered_map>
+
+namespace drift
+{
+  typedef unsigned int var_index;
+}
 #include "../variant.hh"
 namespace drift
 {
@@ -17,8 +22,9 @@ namespace drift
     mul,
     divide,
     end,
-    num_literal,
-    str_literal,
+    num_literal, // a double follows
+    str_literal, // no implementation yet: refer to a location in a data segment?
+    fnc_pointer, // two indexes follow
     nil,
     neg,
     less_than,
@@ -32,8 +38,6 @@ namespace drift
   typedef unsigned char op_t;
 
   typedef std::wstring string_t;
-
-  typedef unsigned int var_index;
 
   typedef std::vector<op_t> program_list;
 

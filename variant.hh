@@ -13,6 +13,11 @@ namespace drift
       const char* file;
       const wchar_t* msg;
     };
+    struct fnct_ptr_t
+    {
+      var_index handle;
+      var_index address;
+    };
     union
     {
       bool boolean;
@@ -20,6 +25,7 @@ namespace drift
       std::wstring str;
       null_t nul;
       error_t error;
+      fnct_ptr_t fn_ptr;
     }; 
     enum class element_kind
     {
@@ -27,13 +33,15 @@ namespace drift
       dbl,
       str,
       null,
-      err
+      err,
+      fptr
     } kind;
     variant(bool b): boolean(b), kind(element_kind::bln) { }
     variant(double d): num(d), kind(element_kind::dbl) { }
     variant(std::wstring s): kind(element_kind::str) { new(&str) std::wstring(s); }
     variant(null_t n): nul(n), kind(element_kind::null) { }
     variant(error_t e): error(e), kind(element_kind::err) { }
+    variant(fnct_ptr_t f) : fn_ptr(f), kind(element_kind::fptr) { }
     variant(const variant& o): kind(o.kind)
     {
       switch(kind)
@@ -52,6 +60,10 @@ namespace drift
           break;
         case element_kind::err:
           error = o.error;
+          break;
+        case element_kind::fptr:
+          fn_ptr = o.fn_ptr;
+          break;
       }
     }
     ~variant()
@@ -76,6 +88,7 @@ namespace drift
   std::wstring kind_string(variant_ptr);
   inline variant::null_t null_variant() { return variant::null_t(); }
   inline variant error_variant(int line, const char* file, const wchar_t* msg) { return variant::error_t{line, file, msg}; }
+  inline variant::fnct_ptr_t function_pointer(var_index handle, var_index address) { return variant::fnct_ptr_t{ handle, address }; }
   template <typename... Args>
 	auto shared_variant(Args&&... args) ->
 	decltype(std::make_shared<variant>(std::forward<Args>(args)...))

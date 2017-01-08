@@ -90,7 +90,7 @@ namespace drift
   }
   void let_expr::emit(compile_context* cc)
   {
-    unsigned int index = cc->add_variable(ident);
+    var_index index = cc->add_variable(ident);
     if(initial)
       initial->emit(cc);
     else
@@ -113,11 +113,11 @@ namespace drift
     // 3. Store the index of the aformentioned uint
     size_t dest_index = cc->bytes_count();
     // 4. Create storage for the uint
-    cc->push_literal<unsigned int>(0);
+    cc->push_literal<var_index>(0U);
     // 5. Emit the body
     body->emit(cc);
     // 6. Write uint now that we know where to go using an offset
-    cc->write_value_bytes<unsigned int>(dest_index, cc->bytes_count() - dest_index);
+    cc->write_value_bytes<var_index>(dest_index, cc->bytes_count() - dest_index);
   }
   void identifier_expr::emit(compile_context* cc)
   {
@@ -127,5 +127,41 @@ namespace drift
     // Get the value on to the stack
     cc->push_inst(inst::load);
     cc->push_literal<var_index>(cc->get_variable(identifier));
+  }
+  def_expr::~def_expr()
+  {
+	  delete body;
+  }
+  void def_expr::emit(compile_context* cc)
+  {
+	  if (cc->has_variable(name))
+	    throw runtime_error("Error - redefinition of: "s + cc->to_string(name));
+
+    // Steps for setting up a function:
+    // 1. Create a variable and get an index for it
+    // 2. Set up a function pointer to go on the stack
+    //    2.1 Push the fnc_pointer op_code
+    //    2.2 Push the index
+    //    2.3 Reserve space for the address (also pushing though)
+    // 3. Defer filling in the address till the end
+    //    In the deferred routine:
+    //    3.1 Get the index of the newest byte
+    //    3.2 Write the index to the reserved space
+    //    3.3 Emit the functions body
+    // This is required to keep the functions body from getting mixed up
+    // With the body of the global scope instructions
+	  var_index func_index = cc->add_variable(name);
+
+    cc->push_inst(inst::fnc_pointer);
+    cc->push_literal<var_index>(func_index);
+    // Create storage for the address - we have to come back here later and write the address of the function
+    size_t func_address_index = cc->bytes_count();
+    cc->push_literal<var_index>(0U);
+
+    cc->defer_to_end([func_address_index, this](compile_context* cc) {
+      size_t function_index = cc->bytes_count();
+      cc->write_value_bytes<var_index>(func_address_index, function_index);
+      body->emit(cc);
+    });
   }
 }

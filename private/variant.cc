@@ -1,5 +1,5 @@
 #include <string>
-#include "../variant.hh"
+#include "types.hh"
 namespace
 {
   static wchar_t* kind_strings[] =

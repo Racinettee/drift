@@ -115,6 +115,10 @@ namespace
     block_expr* body = parse(input);
     return new if_expr(conditional, body);
   }
+  static inline def_expr* handle_def(wistream& input)
+  {
+
+  }
   static inline expr* handle_keyword(wstring result, wistream& input)
   {
     if(result == L"let")
@@ -125,6 +129,10 @@ namespace
     {
       return handle_ifexpr(input);
     }
+	else if (result == L"def")
+	{
+	  return handle_def(input);
+	}
     throw runtime_error("Cannot parse unknown keyword");
   }
   static inline expr* read_ident_or_kw(wchar_t first, wistream& input)

@@ -1,5 +1,5 @@
 let initial = -(10* -2)
 let result
-if(initial < 10) {
+if(initial > 10) {
   result = 1000
 }

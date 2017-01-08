@@ -85,4 +85,13 @@ namespace drift
     virtual void emit(compile_context*) final;
     std::wstring identifier;
   };
+  struct def_expr : expr
+  {
+	  def_expr(std::wstring name, block_expr* inst) :
+	    name(name), body(inst) { }
+	  virtual ~def_expr();
+	  virtual void emit(compile_context*) override;
+	  std::wstring name;
+	  block_expr* body;
+  };
 }

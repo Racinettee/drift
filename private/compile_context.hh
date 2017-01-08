@@ -1,9 +1,11 @@
 #pragma once
+#include <list>
 #include <stack>
 #include <locale>
 #include <string>
 #include <vector>
 #include <codecvt>
+#include <functional>
 #include <unordered_map>
 
 #include "types.hh"
@@ -104,6 +106,17 @@ namespace drift
     inline var_index get_variable(const string_t& name)
     {
       return stack_frames.top()->get_variable(name);
+    }
+    typedef std::function<void(compile_context*)> deferred_routine;
+    std::list<deferred_routine> deferred_routines;
+    inline void defer_to_end(deferred_routine routine)
+    {
+      deferred_routines.push_back(routine);
+    }
+    inline void run_deferred_routines()
+    {
+      for (auto& routine : deferred_routines)
+        routine(this);
     }
     compile_context()
     {
