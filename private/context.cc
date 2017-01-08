@@ -126,6 +126,7 @@ namespace drift
       wistringstream ss(s);
       block_expr* program = parse(ss);
       program->emit(cc);
+      cc->run_deferred_routines();
       delete program;
       exec({});
       if(!stack.empty())
@@ -156,6 +157,7 @@ namespace drift
         throw runtime_error("Could not open file: "s+cc->to_string(file));
       block_expr* program = parse(fs);
       program->emit(cc);
+      cc->run_deferred_routines();
       delete program;
       exec({});
       if(!stack.empty())
