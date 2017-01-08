@@ -23,7 +23,7 @@ namespace drift
     {
       size_t start = program.size();
       program.resize(program.size()+sizeof(T));
-      std::copy((op_t*)&literal, (op_t*)&literal+sizeof(T), &program[start]);
+      *reinterpret_cast<T*>(&program[start]) = literal;
     }
     inline size_t bytes_count() const
     {
@@ -117,6 +117,7 @@ namespace drift
     {
       for (auto& routine : deferred_routines)
         routine(this);
+      deferred_routines.clear();
     }
     compile_context()
     {

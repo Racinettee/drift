@@ -117,7 +117,17 @@ namespace
   }
   static inline def_expr* handle_def(wistream& input)
   {
-
+    eat_whitespace(input);
+    auto first_char = input.get();
+    assert(iswalpha(first_char));
+    auto ident = get_ident(first_char, input);
+    // This is temporary - for the meantime just assert that opening and closing paren follow
+    assert(input.get() == L'(');
+    assert(input.get() == L')');
+    eat_whitespace(input);
+    assert(input.peek() == L'{');
+    block_expr* body = parse(input);
+    return new def_expr(ident, body);
   }
   static inline expr* handle_keyword(wstring result, wistream& input)
   {
@@ -129,10 +139,10 @@ namespace
     {
       return handle_ifexpr(input);
     }
-	else if (result == L"def")
-	{
-	  return handle_def(input);
-	}
+	  else if (result == L"def")
+	  {
+	    return handle_def(input);
+	  }
     throw runtime_error("Cannot parse unknown keyword");
   }
   static inline expr* read_ident_or_kw(wchar_t first, wistream& input)
