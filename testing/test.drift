@@ -3,3 +3,7 @@ let result
 if(initial > 10) {
   result = 1000
 }
+
+def testmethod() {
+  9000
+}

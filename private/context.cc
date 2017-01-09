@@ -106,7 +106,15 @@ namespace drift
         }
         case inst::jump_false: {
           variant_ptr bool_value = stack.back(); stack.pop_back();
-          i += (!bool_value->boolean ? get_datum<unsigned int>(&ilist[i+1]) : sizeof(unsigned int));
+          i += (!bool_value->boolean ? get_datum<var_index>(&ilist[i+1]) : sizeof(var_index));
+          break;
+        }
+        case inst::fnc_pointer: {
+          var_index handle = get_datum<var_index>(&ilist[i + 1]);
+          i += sizeof(var_index);
+          var_index address = get_datum<var_index>(&ilist[i + 1]);
+          i += sizeof(var_index);
+          stack.push_back(shared_variant(function_pointer(handle, address)));
           break;
         }
         case inst::end:
@@ -157,6 +165,7 @@ namespace drift
         throw runtime_error("Could not open file: "s+cc->to_string(file));
       block_expr* program = parse(fs);
       program->emit(cc);
+      cc->push_inst(inst::end);
       cc->run_deferred_routines();
       delete program;
       exec({});

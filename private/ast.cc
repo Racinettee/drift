@@ -157,6 +157,8 @@ namespace drift
     // Create storage for the address - we have to come back here later and write the address of the function
     size_t func_address_index = cc->bytes_count();
     cc->push_literal<var_index>(0U);
+    cc->push_inst(inst::store);
+    cc->push_literal<var_index>(func_index);
 
     cc->defer_to_end([func_address_index, this](compile_context* cc) {
       size_t function_index = cc->bytes_count();
