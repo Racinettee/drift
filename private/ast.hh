@@ -94,4 +94,20 @@ namespace drift
 	  std::wstring name;
 	  block_expr* body;
   };
+  struct arg_list : expr
+  {
+    arg_list(std::vector<expr*> args) : args(args) { }
+    virtual ~arg_list();
+    virtual void emit(compile_context*) override;
+    std::vector<expr*> args;
+  };
+  struct function_call : expr
+  {
+    function_call(std::wstring name, arg_list* args) :
+      name(name), args(args) { }
+    virtual ~function_call();
+    virtual void emit(compile_context*) override;
+    std::wstring name;
+    arg_list* args;
+  };
 }

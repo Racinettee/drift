@@ -145,6 +145,10 @@ namespace
 	  }
     throw runtime_error("Cannot parse unknown keyword");
   }
+  static inline arg_list* handle_args(wistream& input)
+  {
+
+  }
   static inline expr* read_ident_or_kw(wchar_t first, wistream& input)
   {
     const wstring result = get_ident(first, input);
@@ -157,11 +161,22 @@ namespace
     // By here we know its an identifier - check for some special cases:
     // = - do an assignment expression
     // . - do a member access - when it exists
+    // () - do a method call
     if(input.peek() == L'=')
     {
       input.get();
       return new assign_expr(result, parse_expr(input));
     }
+    if (input.peek() == L'(')
+    {
+      input.get();
+      eat_whitespace(input);
+      // We go to parse some args if we see that ')' isn't the next character
+      arg_list* args = (input.peek() == L')' ? nullptr : handle_args(input));
+      assert(input.get() == L')');
+      return new function_call(result, args);
+    }
+    //
     // Final case - return an ident expr, pushes the value of the variable
     return new identifier_expr(result);
   }

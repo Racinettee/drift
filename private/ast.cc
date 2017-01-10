@@ -4,6 +4,14 @@
 #include <locale>
 using namespace std;
 
+namespace
+{
+  static void error(std::string msg)
+  {
+    throw runtime_error(msg);
+  }
+}
+
 namespace drift
 {
   void atomic_expr::emit(compile_context* cc)
@@ -164,6 +172,26 @@ namespace drift
       size_t function_index = cc->bytes_count();
       cc->write_value_bytes<var_index>(func_address_index, function_index);
       body->emit(cc);
+      cc->push_inst(inst::end);
     });
+  }
+  arg_list::~arg_list()
+  {
+    for (auto arg : args)
+      delete arg;
+  }
+  void arg_list::emit(compile_context* cc)
+  {
+    for (auto arg : args)
+      arg->emit(cc);
+  }
+  function_call::~function_call()
+  {
+    delete args;
+  }
+  void function_call::emit(compile_context* cc)
+  {
+    if (!cc->has_variable(name))
+      error("Error: "s + cc->to_string(name) + " is undefined");
   }
 }
