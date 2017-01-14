@@ -147,7 +147,16 @@ namespace
   }
   static inline arg_list* handle_args(wistream& input)
   {
-
+    vector<expr*> arguments;
+    arguments.push_back(parse_expr(input));
+    eat_whitespace(input);
+    while (input.peek() == ',')
+    {
+      input.get();
+      arguments.push_back(parse_expr(input));
+      eat_whitespace(input);
+    }
+    return new arg_list(arguments);
   }
   static inline expr* read_ident_or_kw(wchar_t first, wistream& input)
   {

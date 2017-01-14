@@ -32,7 +32,8 @@ namespace drift
     equals,
     nequals,
     jump_true,
-    jump_false
+    jump_false,
+    call
   };
 
   typedef unsigned char op_t;

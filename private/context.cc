@@ -117,7 +117,19 @@ namespace drift
           stack.push_back(shared_variant(function_pointer(handle, address)));
           break;
         }
+        case inst::call: {
+          var_index fn_ptr = get_datum<var_index>(&ilist[i + 1]);
+          i += sizeof(var_index);
+          variant_ptr fn = stack_frames.top()->get_var(fn_ptr);
+          var_index address = fn->fn_ptr.address;
+          // We need to put the return address (whatever i is right now, into a new frame that we create - and pop later)
+          break;
+        }
         case inst::end:
+          if (stack_frames.size() > 1) {
+            delete stack_frames.top();
+            stack_frames.pop();
+          }
           break;
         case inst::num_literal: {
           stack.push_back(shared_variant(get_datum<double>(&ilist[i+1])));

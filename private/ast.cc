@@ -2,13 +2,27 @@
 
 #include <string>
 #include <locale>
+#include <iostream>
+#include <sstream>
 using namespace std;
 
 namespace
 {
-  static void error(std::string msg)
+  template<class Arg> static inline void error(ostringstream& ss, Arg arg)
   {
-    throw runtime_error(msg);
+    ss << arg << " ";
+  }
+  template<class Arg, class... Args> static inline void error(ostringstream& ss, const Arg& arg, const Args&... args)
+  {
+    error(ss, arg);
+    error(ss, args...);
+  }
+  template<class... Args> static inline void error(const Args&... args)
+  {
+    ostringstream ss("");
+    ss << "Error: "s;
+    error(ss, args...);
+    throw runtime_error(ss.str());
   }
 }
 
@@ -67,7 +81,7 @@ namespace drift
     else if(op == L"!=")
       cc->push_inst(inst::nequals);
     else
-      throw runtime_error(cc->to_string(L"Unknown binary operator: "s + op));
+      error(cc->to_string(L"Unknown binary operator: "s), cc->to_string(op));
     // else if etc....
   }
   block_expr::~block_expr()
@@ -87,7 +101,7 @@ namespace drift
   void assign_expr::emit(compile_context* cc)
   {
     if(!cc->has_variable(ident))
-      throw runtime_error("Variable: "s+cc->to_string(ident)+" has not been declared"s);
+      error("Variable: "s, cc->to_string(ident), " has not been declared"s);
     value->emit(cc);
     cc->push_inst(inst::store);
     cc->push_literal<var_index>(cc->get_variable(ident));
@@ -131,7 +145,7 @@ namespace drift
   {
     // Variable decl
     if(!cc->has_variable(identifier))
-      throw runtime_error("Variable: "s+cc->to_string(identifier)+" has not been declared"s);
+      error("Variable: "s, cc->to_string(identifier), " has not been declared"s);
     // Get the value on to the stack
     cc->push_inst(inst::load);
     cc->push_literal<var_index>(cc->get_variable(identifier));
@@ -143,7 +157,7 @@ namespace drift
   void def_expr::emit(compile_context* cc)
   {
 	  if (cc->has_variable(name))
-	    throw runtime_error("Error - redefinition of: "s + cc->to_string(name));
+	    error("Redefinition of: ", cc->to_string(name));
 
     // Steps for setting up a function:
     // 1. Create a variable and get an index for it
@@ -191,7 +205,15 @@ namespace drift
   }
   void function_call::emit(compile_context* cc)
   {
+    // Check that the function exists or has been declared call exists
     if (!cc->has_variable(name))
-      error("Error: "s + cc->to_string(name) + " is undefined");
+      error(cc->to_string(name), " is undefined");
+
+    // Push arguments onto the stack
+    if(args)
+      args->emit(cc);
+
+    cc->push_inst(inst::call); // Maybe we want to put a count of how many args were passed here or something...
+    cc->push_literal<var_index>(cc->get_variable(name));
   }
 }

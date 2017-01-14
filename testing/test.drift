@@ -7,3 +7,5 @@ if(initial > 10) {
 def testmethod() {
   9000
 }
+
+testmethod()
