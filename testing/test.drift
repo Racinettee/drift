@@ -5,7 +5,12 @@ if(initial > 10) {
 }
 
 def testmethod() {
+  777
   9000
+  let testvar = 867
+  10000
+  testvar
 }
 
+testmethod()
 testmethod()

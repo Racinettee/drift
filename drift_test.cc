@@ -8,9 +8,9 @@ using namespace drift;
 int main() try
 {
   context ctxt;
-  ctxt.load_file(L"testing/test.drift");
+  wcout << L"Result of test.drift: " << ctxt.load_file(L"testing/test.drift")->num << endl;
   auto initial = ctxt[L"result"];
-  wcout << kind_string(initial) << L": "<< initial->num << endl;
+  wcout << L"Details of variable 'result': " << kind_string(initial) << L": "<< initial->num << endl;
   return 0;
 }
 catch(std::exception& e)

@@ -125,8 +125,9 @@ namespace
     assert(input.get() == L'(');
     assert(input.get() == L')');
     eat_whitespace(input);
-    assert(input.peek() == L'{');
+    assert(input.get() == L'{');
     block_expr* body = parse(input);
+    assert(input.get() == L'}');
     return new def_expr(ident, body);
   }
   static inline expr* handle_keyword(wstring result, wistream& input)

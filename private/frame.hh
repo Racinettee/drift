@@ -5,10 +5,11 @@ namespace drift
 {
   class frame
   {
+    var_index return_idx;
     frame* parent;
     variable_storage var_storage;
   public:
-    frame(frame* prnt = nullptr): parent(prnt) { }
+    frame(var_index rtrn_idx = 0U, frame* prnt = nullptr) : return_idx(rtrn_idx), parent(prnt) { }
     variant_ptr get_var(var_index index)
     {
       try {
@@ -20,6 +21,10 @@ namespace drift
           return parent->get_var(index);
       }
       return shared_variant(null_variant());
+    }
+    var_index return_index() const
+    {
+      return return_idx;
     }
     void set_var(var_index index, variant_ptr val)
     {

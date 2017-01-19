@@ -122,15 +122,18 @@ namespace drift
           i += sizeof(var_index);
           variant_ptr fn = stack_frames.top()->get_var(fn_ptr);
           var_index address = fn->fn_ptr.address;
-          // We need to put the return address (whatever i is right now, into a new frame that we create - and pop later)
+          stack_frames.push(new frame(static_cast<var_index>(i), stack_frames.top()));
+          i = address-1; // This subtraction accounts for the offset the ast generates
           break;
         }
         case inst::end:
           if (stack_frames.size() > 1) {
+            i = stack_frames.top()->return_index();
             delete stack_frames.top();
             stack_frames.pop();
+            break;
           }
-          break;
+          return;
         case inst::num_literal: {
           stack.push_back(shared_variant(get_datum<double>(&ilist[i+1])));
           i += sizeof(double);
