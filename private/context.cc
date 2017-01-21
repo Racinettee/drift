@@ -12,7 +12,7 @@ using namespace std;
 
 namespace drift
 {
-  block_expr* parse(std::wistream&);
+  ast::block_expr* parse(std::wistream&);
 
   context::context()
   {
@@ -147,7 +147,7 @@ namespace drift
   {
     try {
       wistringstream ss(s);
-      block_expr* program = parse(ss);
+      ast::block_expr* program = parse(ss);
       program->emit(cc);
       cc->run_deferred_routines();
       delete program;
@@ -178,7 +178,7 @@ namespace drift
       wifstream fs{cc->to_string(file)};
       if(!fs.is_open())
         throw runtime_error("Could not open file: "s+cc->to_string(file));
-      block_expr* program = parse(fs);
+      ast::block_expr* program = parse(fs);
       program->emit(cc);
       cc->push_inst(inst::end);
       cc->run_deferred_routines();

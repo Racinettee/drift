@@ -16,11 +16,12 @@ using namespace drift;
 
 namespace drift
 {
-  block_expr* parse(std::wistream& input);
-  expr* parse_expr(std::wistream& input, bool=true);
+  ast::block_expr* parse(std::wistream& input);
+  ast::expr* parse_expr(std::wistream& input, bool=true);
 }
 namespace
 {
+  using namespace drift::ast;
   static inline void eat_whitespace(wistream& input)
   {
     wchar_t chr = input.peek();
@@ -223,12 +224,12 @@ namespace
 }
 namespace drift
 {
-  expr* parse_expr(std::wistream& input, bool advance_binop)
+  ast::expr* parse_expr(std::wistream& input, bool advance_binop)
   {
     eat_whitespace(input);
     wchar_t first_char = input.get();
 
-    expr* result_expr = nullptr;
+    ast::expr* result_expr = nullptr;
 
     // Parse a numeric literal expr
     if(iswdigit(first_char))
@@ -266,7 +267,7 @@ namespace drift
 
     return result_expr;
   }
-  block_expr* parse(std::wistream& input)
+  ast::block_expr* parse(std::wistream& input)
   {
     vector<expr*> results;
 
@@ -278,6 +279,6 @@ namespace drift
       
       results.push_back(parse_expr(input));
     }
-    return new block_expr(results);
+    return new ast::block_expr(results);
   }
 }
