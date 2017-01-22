@@ -25,6 +25,14 @@ namespace drift
       program.resize(program.size()+sizeof(T));
       *reinterpret_cast<T*>(&program[start]) = literal;
     }
+    template<> inline void push_literal<string_t>(string_t literal)
+    {
+      // Push the size of the string here
+      push_literal<var_index>(literal.size());
+      size_t start = program.size();
+      program.resize(program.size() + (literal.size() * sizeof(wchar_t)));
+      std::copy(literal.begin(), literal.end(), (wchar_t*)&program[start]);
+    }
     inline size_t bytes_count() const
     {
       return program.size();

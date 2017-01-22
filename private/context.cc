@@ -139,6 +139,13 @@ namespace drift
           i += sizeof(double);
           break;
         }
+        case inst::str_literal: {
+          var_index str_size = get_datum<var_index>(&ilist[i + 1]);
+          i += sizeof(var_index);
+          stack.push_back(shared_variant(string_t((wchar_t*)&ilist[i + 1], str_size)));
+          i += str_size*sizeof(wchar_t);
+          break;
+        }
       }
     }
   }

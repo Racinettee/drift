@@ -41,6 +41,9 @@ namespace drift
         break;
       case kind::str:
         // emit the bytes into a data segment or something
+        cc->push_inst(inst::str_literal);
+        // The first four bytes before the string specify its size
+        cc->push_literal<string_t>(value->str);
         break;
       case kind::null:
         break;

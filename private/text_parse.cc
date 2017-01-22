@@ -221,6 +221,18 @@ namespace
     // Otherwise we'll create a unary node - eg for '-' we'll use a neg command
     return new unary_operator(oper, parse_expr(input));
   }
+  static inline atomic_expr* read_string(const wchar_t first_char, wistream& input)
+  {
+    string_t result = L"";
+    wchar_t current;
+    while ((current = input.get()) != first_char)
+    {
+      if (current == L'\\')
+        current = input.get();
+      result += current;
+    }
+    return new atomic_expr(result);
+  }
 }
 namespace drift
 {
@@ -240,6 +252,10 @@ namespace drift
     else if(is_arith(first_char))
     {
       result_expr = unary_op(first_char, input);
+    }
+    else if (first_char == L'\'' || first_char == L'"')
+    {
+	    result_expr = read_string(first_char, input);
     }
     // Identifier expression
     else if(iswalnum(first_char))
