@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.2)
 project(drift)
-add_executable(drift_test
+
+add_library(drift
   context.hh
-  drift_test.cc
   variant.hh
   private/ast.hh
   private/ast.cc
@@ -12,9 +12,17 @@ add_executable(drift_test
   private/types.hh
   private/context.cc
   private/variant.cc)
+
+set_property(TARGET drift PROPERTY CXX_STANDARD 14)
+set_property(TARGET drift PROPERTY CXX_STANDARD_REQUIRED 14)  
+
+add_executable(drift_test
+  drift_test.cc)
+
 set_property(TARGET drift_test PROPERTY CXX_STANDARD 14)
 set_property(TARGET drift_test PROPERTY CXX_STANDARD_REQUIRED 14)
 
+target_link_libraries(drift_test drift)
 
 # Thanks: http://stackoverflow.com/a/33266748
 include(CheckCXXCompilerFlag)
