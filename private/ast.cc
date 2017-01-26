@@ -96,8 +96,14 @@ namespace drift
     }
     void block_expr::emit(compile_context* cc)
     {
-      for (auto expr : expressions)
+      for (size_t i = 0U; i < expressions.size() - 1; i++) {
+        auto expr = expressions[i];
+        // This is checking for an effectless expression at block level
+        if (dynamic_cast<atomic_expr*>(expr))
+          continue;
         expr->emit(cc);
+      }
+      expressions.back()->emit(cc);
     }
     assign_expr::~assign_expr()
     {
