@@ -156,4 +156,28 @@ namespace drift
     }
     return error_variant(__LINE__, __FILE__, L"Error handling * for variant");
   }
+  wostream& operator<<(wostream& o, const drift::object& obj)
+  {
+    switch (obj.ptr->kind)
+    {
+    case variant::element_kind::str:
+      o << obj.get_string();
+      break;
+    case variant::element_kind::dbl:
+      o << obj.get_double();
+      break;
+    case variant::element_kind::bln:
+      o << obj.get_bool();
+      break;
+    case variant::element_kind::null:
+      o << L"<null>";
+      break;
+    case variant::element_kind::err: {
+      auto& error = obj.get_error();
+      o << L"(error: " << error.file << error.line << error.msg << L")";
+      break;
+    }
+    }
+    return o;
+  }
 }

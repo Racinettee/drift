@@ -7,12 +7,12 @@ using namespace drift;
 
 int main() try
 {
+  wcout << L"Size of variant: " << sizeof(variant_ptr) << endl;
   context ctxt;
-  wcout << L"Result of test.drift: " << ctxt.load_file(L"testing/test.drift")->str << endl;
-  auto initial = ctxt[L"result"];
-  wcout << L"Details of variable 'result': " << kind_string(initial) << L": "<< initial->num << endl;
-  initial = ctxt[L"initial"];
-  wcout << L"Details of variable 'initial': " << kind_string(initial) << L": " << initial->num << endl;
+  wcout << L"Result of test.drift: " << ctxt.load_file(L"testing/test.drift") << endl;
+  wcout << L"Value of variable 'result': " << ctxt[L"result"] << endl;
+  wcout << L"Value of variable 'initial': " << ctxt[L"initial"] << endl;
+  wcout << L"Value of variable 'stringvar': " << ctxt[L"stringvar"] << endl;
 
   return 0;
 }

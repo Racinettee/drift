@@ -10,17 +10,18 @@ namespace drift
     context();
     ~context();
     // Evaluate an expression
-    variant_ptr operator()(const std::wstring&);
+    object operator()(const std::wstring&);
     // Index the context for globals
-    variant_ptr operator[](const std::wstring&);
+    object operator[](const std::wstring&);
     // There is no data segment yet, but if there was this function would include it
     size_t code_size() const;
     // Load script from file
-    variant_ptr load_file(const std::wstring&);
+    object load_file(const wchar_t*);
+    object load_file(const std::wstring&);
   private:
     value_stack stack;
     frame global_frame;
     struct compile_context* cc;
-    void exec(args_t);
+    void exec(args_t, size_t=0U);
   };
 }

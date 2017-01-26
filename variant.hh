@@ -2,6 +2,7 @@
 #include <new>
 #include <string>
 #include <memory>
+#include <ostream>
 namespace drift
 {
   struct variant
@@ -17,6 +18,7 @@ namespace drift
     {
       var_index handle;
       var_index address;
+      class context* owner;
     };
     union
     {
@@ -88,7 +90,10 @@ namespace drift
   std::wstring kind_string(variant_ptr);
   inline variant::null_t null_variant() { return variant::null_t(); }
   inline variant error_variant(int line, const char* file, const wchar_t* msg) { return variant::error_t{line, file, msg}; }
-  inline variant::fnct_ptr_t function_pointer(var_index handle, var_index address) { return variant::fnct_ptr_t{ handle, address }; }
+  inline variant::fnct_ptr_t function_pointer(var_index handle, var_index address, class context* owner)
+  {
+    return variant::fnct_ptr_t{ handle, address, owner };
+  }
   template <typename... Args>
 	auto shared_variant(Args&&... args) ->
 	decltype(std::make_shared<variant>(std::forward<Args>(args)...))
@@ -165,4 +170,48 @@ namespace drift
     }
     return error_variant(__LINE__, __FILE__, L"Error handling > for variant");
   }
+  class object
+  {
+  public:
+    object(const object& o) : ptr(o.ptr) { }
+    object(variant_ptr p) : ptr(p) { }
+    ~object() { }
+    object& operator=(const object& o)
+    {
+      ptr = o.ptr;
+      return *this;
+    }
+    bool get_bool() const
+    {
+      return ptr->boolean;
+    }
+    double get_double() const
+    {
+      return ptr->num;
+    }
+    std::wstring get_string() const
+    {
+      return ptr->str;
+    }
+    const wchar_t* get_cstring() const
+    {
+      return ptr->str.c_str();
+    }
+    variant::error_t get_error() const
+    {
+      return ptr->error;
+    }
+    object operator()()
+    {
+      switch (ptr->kind)
+      {
+      case variant::element_kind::fptr:
+
+      }
+    }
+  private:
+    variant_ptr ptr;
+    friend std::wostream& operator<<(std::wostream&, const object&);
+  };
+  std::wostream& operator<<(std::wostream& o, const drift::object& obj);
 }

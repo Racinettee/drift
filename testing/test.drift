@@ -12,6 +12,6 @@ def testmethod() {
   testvar
 }
 
+let stringvar = 'huehuehuehue'
+
 testmethod()
-testmethod()
-'testing testing 123'

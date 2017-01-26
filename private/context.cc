@@ -30,7 +30,7 @@ namespace drift
   {
     return *reinterpret_cast<T*>(addr);
   }
-  void context::exec(const std::vector<shared_ptr<variant>>& args)
+  void context::exec(const std::vector<shared_ptr<variant>>& args, size_t starting_point)
   {
     // Do not delete the last frame - it is owned by the context
     std::stack<frame*> stack_frames;
@@ -38,7 +38,7 @@ namespace drift
     // This will need to start off at an offset if there is a data segment ever<
     auto& ilist = this->cc->program;
     // The same goes for this line
-    for(size_t i = 0; i < code_size(); i++)
+    for(size_t i = starting_point; i < code_size(); i++)
     {
       switch(ilist[i])
       {
@@ -114,7 +114,7 @@ namespace drift
           i += sizeof(var_index);
           var_index address = get_datum<var_index>(&ilist[i + 1]);
           i += sizeof(var_index);
-          stack.push_back(shared_variant(function_pointer(handle, address)));
+          stack.push_back(shared_variant(function_pointer(handle, address, this)));
           break;
         }
         case inst::call: {
@@ -150,7 +150,7 @@ namespace drift
     }
   }
   
-  variant_ptr context::operator()(const wstring& s)
+  object context::operator()(const wstring& s)
   {
     try {
       wistringstream ss(s);
@@ -172,14 +172,18 @@ namespace drift
       return shared_variant(null_variant());
     }
   }
-  variant_ptr context::operator[](const wstring& name)
+  object context::operator[](const wstring& name)
   {
     if(!cc->has_variable(name))
       return shared_variant(null_variant());
     return global_frame.get_var(cc->get_variable(name));
   }
 
-  variant_ptr context::load_file(const wstring& file)
+  object context::load_file(const wchar_t* file)
+  {
+    return load_file(wstring(file));
+  }
+  object context::load_file(const wstring& file)
   {
     try {
       wifstream fs{cc->to_string(file)};
