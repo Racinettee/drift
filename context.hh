@@ -23,5 +23,6 @@ namespace drift
     frame global_frame;
     struct compile_context* cc;
     void exec(args_t, size_t=0U);
+    friend class object;
   };
 }

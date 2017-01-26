@@ -1,5 +1,6 @@
 #include <string>
 #include "types.hh"
+#include "../context.hh"
 namespace
 {
   static wchar_t* kind_strings[] =
@@ -155,6 +156,18 @@ namespace drift
         throw runtime_error("Attempted usage of null value as lhand oprand");
     }
     return error_variant(__LINE__, __FILE__, L"Error handling * for variant");
+  }
+  object object::operator()()
+  {
+    switch (ptr->kind)
+    {
+    case variant::element_kind::fptr:
+      auto& fn_ptr = ptr->fn_ptr;
+      fn_ptr.owner->exec({}, fn_ptr.address);
+      auto result = fn_ptr.owner->stack.back();
+      fn_ptr.owner->stack.pop_back();
+      return result;
+    }
   }
   wostream& operator<<(wostream& o, const drift::object& obj)
   {

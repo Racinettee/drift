@@ -118,9 +118,9 @@ namespace drift
           break;
         }
         case inst::call: {
-          var_index fn_ptr = get_datum<var_index>(&ilist[i + 1]);
+          var_index fn_ptr_id = get_datum<var_index>(&ilist[i + 1]);
           i += sizeof(var_index);
-          variant_ptr fn = stack_frames.top()->get_var(fn_ptr);
+          variant_ptr fn = stack_frames.top()->get_var(fn_ptr_id);
           var_index address = fn->fn_ptr.address;
           stack_frames.push(new frame(static_cast<var_index>(i), stack_frames.top()));
           i = address-1; // This subtraction accounts for the offset the ast generates

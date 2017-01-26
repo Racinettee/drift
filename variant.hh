@@ -201,14 +201,7 @@ namespace drift
     {
       return ptr->error;
     }
-    object operator()()
-    {
-      switch (ptr->kind)
-      {
-      case variant::element_kind::fptr:
-
-      }
-    }
+    object operator()();
   private:
     variant_ptr ptr;
     friend std::wostream& operator<<(std::wostream&, const object&);
