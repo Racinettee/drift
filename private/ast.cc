@@ -1,3 +1,23 @@
+#include "luajit2/dynasm/dasm_proto.h"
+#include "luajit2/dynasm/dasm_x86.h"
+
+// DynASM directives
+|.if X64
+|.arch x64
+|.else
+|.arch x86
+|.endif
+|.actionlist drift_actions
+
+|.type state, drift_state_t, a_state
+
+#define Dst &cc->dstate
+
+|.code
+|->drift_main:
+| prologue
+| mov aPtr, state->tape
+
 #include "ast.hh"
 
 #include <string>
@@ -26,8 +46,20 @@ namespace
   }
 }
 
+#include "../context.hh"
+
 namespace drift
 {
+  context::context()
+  {
+    dasm_init((::dasm_State**)&state, 1);
+    dasm_setup((::dasm_State**)&state, drift_actions);
+    cc = new compile_context(state);
+  }
+  context::~context()
+  {
+    delete cc;
+  }
   namespace ast
   {
     void atomic_expr::emit(compile_context* cc)

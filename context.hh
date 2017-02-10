@@ -24,5 +24,6 @@ namespace drift
     struct compile_context* cc;
     void exec(args_t, size_t=0U);
     friend class object;
+    struct dasm_State* state;
   };
 }

@@ -14,6 +14,7 @@ namespace drift
 {
   struct compile_context
   {
+    struct dasm_State* dstate;
     program_list program;
     inline void push_inst(op_t op)
     {
@@ -119,8 +120,9 @@ namespace drift
         routine(this);
       deferred_routines.clear();
     }
-    compile_context()
+    compile_context(struct dasm_State* s)
     {
+      dstate = s;
       push_frame();
     }
     ~compile_context()

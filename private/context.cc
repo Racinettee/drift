@@ -13,15 +13,7 @@ using namespace std;
 namespace drift
 {
   ast::block_expr* parse(std::wistream&);
-
-  context::context()
-  {
-    cc = new compile_context;
-  }
-  context::~context()
-  {
-    delete cc;
-  }
+  
   size_t context::code_size() const
   {
     return cc->program.size();

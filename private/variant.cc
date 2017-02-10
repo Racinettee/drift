@@ -14,6 +14,9 @@ namespace
 using namespace std;
 namespace drift
 {
+  auto get_cstradd = &drift::object::get_cstring;
+  auto get_doubleadd = &drift::object::get_double;
+
   wstring kind_string(variant_ptr v)
   {
     return kind_strings[(int)v->kind];
